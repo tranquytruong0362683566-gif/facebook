@@ -1,0 +1,21 @@
+PASS: Web and extension handshake through actual worker/content bridge
+PASS: Registration survives sessions and runs only in the isolated top frame
+PASS: Correct project path/index alias accepted; foreign page, origin and frame rejected
+PASS: Worker denies an untrusted page even when it spoofs an internal source
+PASS: License gate uses extension license result, including unauthorized and reconnection
+PASS: AI and Apify proxy round trip uses packaged offscreen code without browser CORS
+PASS: Proxy preserves HTTP errors and blocks arbitrary destinations before fetch
+PASS: Caller cancellation reaches the offscreen fetch and closes the request
+PASS: Large API responses are rejected at 20 MB
+PASS: Unsupported aliases may fall back; unknown completion never replays a mutation
+PASS: Same-origin and window checks reject messages from a foreign frame
+PASS: Setup works without a license; saving a domain requires host permission
+PASS: Backups exclude secrets by default and restore chosen values
+PASS: HTML assets resolve from GitHub project paths and extension pages; no published credential
+
+14 checks passed.
+
+Environment: Node v24.19.0, VM simulations of Chrome APIs and HTTP responses.
+No live Facebook comments, logins, paid API requests, Chrome loading or browser rendering were performed.
+
+Syntax: 32 JavaScript source/test files checked with node --check; no syntax errors.
