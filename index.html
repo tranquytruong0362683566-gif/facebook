@@ -15,7 +15,7 @@
     <section class="license-card">
       <section class="web-connect-box" aria-label="Kết nối extension">
         <strong>Kết nối web với extension</strong>
-        <p>Cài extension, mở popup và lưu địa chỉ web bên dưới. Sau đó bấm Mở bảng điều khiển web.</p>
+        <p>Cài extension rồi mở <a href="https://tranquytruong.top/">tranquytruong.top</a>. Extension tự kết nối với web.</p>
         <input id="webDashboardAddress" type="url" readonly aria-label="Địa chỉ bảng điều khiển web">
         <div class="web-connect-actions">
           <button class="secondary-button" id="copyWebAddressBtn" type="button">Copy địa chỉ</button>
@@ -33,7 +33,7 @@
         <input id="tqtMachineKeyInput" type="text" value="Đang tạo KEY..." readonly spellcheck="false" aria-label="KEY cố định của extension">
         <button class="primary-button" id="copyTqtMachineKeyBtn" type="button">Copy KEY</button>
       </div>
-      <p class="license-status" id="tqtLicenseStatus" data-state="checking" aria-live="polite">Đang kết nối ngầm với GitHub để kiểm tra KEY...</p>
+      <p class="license-status" id="tqtLicenseStatus" data-state="checking" aria-live="polite">Web đang nhận KEY từ extension và kiểm tra quyền sử dụng...</p>
       <button class="secondary-button license-retry-button" id="retryTqtLicenseBtn" type="button">Kiểm tra lại</button>
     </section>
   </div>
@@ -62,7 +62,7 @@
       </nav>
       <div class="sidebar-meta" aria-label="Phiên bản công cụ">
         <span>Phiên bản</span>
-        <strong>4.0.0</strong>
+        <strong>4.1.0</strong>
         <span id="webExtensionStatus" aria-live="polite">Extension · Chưa kết nối</span>
         <button class="secondary-button" data-open-backup type="button">Dữ liệu</button>
       </div>
@@ -538,7 +538,9 @@
     <p id="webBackupStatus" role="status"></p>
   </dialog>
   <script src="shared/dashboard-backup.js"></script>
+  <script src="config/license-config.js"></script>
   <script src="scripts/background-bridge-client.js"></script>
+  <script src="scripts/license-verifier.js"></script>
   <script src="scripts/license-access-controller.js"></script>
   <script src="scripts/provider-api-client.js"></script>
   <script src="shared/manual-comment-content.js"></script>

@@ -13,49 +13,46 @@
     status.textContent = message;
     status.dataset.state = state;
   }
-  function lockDashboard() {
+  function lockDashboard(message = '') {
+    const wasAuthorized = document.documentElement.dataset.tqtLicenseAuthorized === 'true';
     document.documentElement.classList.add('license-pending');
     document.documentElement.classList.remove('license-authorized');
     document.documentElement.dataset.tqtLicenseAuthorized = 'false';
     gate.setAttribute('aria-hidden', 'false');
     dashboard.setAttribute('inert', '');
     dashboard.setAttribute('aria-hidden', 'true');
+    if (wasAuthorized) window.dispatchEvent(new CustomEvent('tqt:license-denied', { detail: { message } }));
   }
   function unlockDashboard() {
     if (!window.fbBridgeApi.bridgeAvailable()) return;
+    const wasAuthorized = document.documentElement.dataset.tqtLicenseAuthorized === 'true';
     document.documentElement.classList.remove('license-pending');
     document.documentElement.classList.add('license-authorized');
     document.documentElement.dataset.tqtLicenseAuthorized = 'true';
     gate.setAttribute('aria-hidden', 'true');
     dashboard.removeAttribute('inert');
     dashboard.setAttribute('aria-hidden', 'false');
-    window.dispatchEvent(new CustomEvent('tqt:license-authorized'));
+    if (!wasAuthorized) window.dispatchEvent(new CustomEvent('tqt:license-authorized'));
+  }
+  function renderLicense(data) {
+    if (data.machineKey) keyInput.value = data.machineKey;
+    if (data.authorized && window.fbBridgeApi.bridgeAvailable()) {
+      setStatus(data.message || 'KEY đã được ADMIN cấp quyền.', 'ok');
+      unlockDashboard();
+    } else {
+      const message = data.message || 'KEY chưa được ADMIN cấp quyền. Thêm KEY rồi bấm Kiểm tra lại.';
+      lockDashboard(message);
+      setStatus(message, data.code === 'TQT_LICENSE_NOT_FOUND' ? 'waiting' : 'error');
+    }
   }
   function checkLicense(forceRefresh = false) {
     if (checkPromise) return checkPromise;
     retryButton.disabled = true;
-    setStatus('Đang kiểm tra KEY bản quyền của thiết bị...', 'checking');
+    setStatus('Web đang kiểm tra KEY bản quyền của thiết bị...', 'checking');
     checkPromise = (async () => {
-      try {
-        const response = await window.fbBridgeApi.sendRawBridge('GET_TQT_LICENSE_STATUS',
-          { forceRefresh }, { allowFailure: true });
-        const data = window.fbBridgeApi.bridgeResponseData(response);
-        if (data.machineKey) keyInput.value = data.machineKey;
-        if (data.authorized === true) {
-          setStatus('KEY đã được ADMIN cấp quyền.', 'ok');
-          unlockDashboard();
-        } else {
-          lockDashboard();
-          setStatus(data.message || response.error || 'KEY chưa được ADMIN cấp quyền. Thêm KEY rồi bấm Kiểm tra lại.',
-            data.code === 'TQT_LICENSE_NOT_FOUND' ? 'waiting' : 'error');
-        }
-      } catch (error) {
-        lockDashboard();
-        setStatus(`Không kiểm tra được KEY: ${error.message}`, 'error');
-      } finally {
-        retryButton.disabled = false;
-        checkPromise = null;
-      }
+      try { renderLicense(await window.TqtWebLicense.verify({ forceRefresh })); }
+      catch (error) { renderLicense({ authorized: false, message: `Không kiểm tra được KEY: ${error.message}` }); }
+      finally { retryButton.disabled = false; checkPromise = null; }
     })();
     return checkPromise;
   }
@@ -68,13 +65,19 @@
     setTimeout(() => { copyButton.textContent = 'Copy KEY'; }, 1400);
   });
   retryButton.addEventListener('click', () => checkLicense(true));
+  window.addEventListener('tqt:license-status', event => renderLicense(event.detail || {}));
   window.addEventListener('autovip:bridge-status', event => {
     const connected = event.detail?.connected === true;
-    if (!connected) {
-      lockDashboard();
-      setStatus(event.detail?.message || 'Chưa kết nối extension.', 'error');
-    } else if (!previouslyConnected) checkLicense();
+    if (!connected) renderLicense({ authorized: false, message: event.detail?.message || 'Chưa kết nối extension.' });
+    else if (!previouslyConnected) checkLicense();
     previouslyConnected = connected;
   });
+  window.addEventListener('focus', () => { if (window.fbBridgeApi.bridgeAvailable()) checkLicense(); });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && window.fbBridgeApi.bridgeAvailable()) checkLicense();
+  });
+  const timer = setInterval(() => { if (window.fbBridgeApi.bridgeAvailable()) checkLicense(); }, 60000);
+  window.addEventListener('pagehide', event => { if (!event.persisted) clearInterval(timer); });
+  lockDashboard();
   checkLicense();
 }());

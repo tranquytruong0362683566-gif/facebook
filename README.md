@@ -1,78 +1,67 @@
-# Facebook Auto Comment — Web GitHub Pages 4.0.0
+# Facebook Auto Comment — Web tranquytruong.top 4.1.0
 
-Đây là phần web trong bộ hai phần. Mã nguồn đã đầy đủ, không cần npm hoặc bước build.
+Bản web này chứa toàn bộ giao diện, điều phối và **mã kiểm tra KEY**. Không cần npm hoặc bước build. Dùng cùng extension 4.1.0.
 
-## Đưa web lên GitHub
+## Tải ZIP trực tiếp lên iNET OneSite
 
-1. Giải nén ZIP, mở thư mục `web-github`.
-2. Tạo repository GitHub, ví dụ `auto-binh-luan`.
-3. Đưa **nội dung bên trong** thư mục `web-github` lên thư mục gốc của repository. File `index.html` phải nằm ngay ở gốc repository, cùng với `assets`, `scripts`, `shared` và `styles`.
-4. Vào **Settings → Pages → Build and deployment**.
-5. Chọn **Deploy from a branch**, nhánh **main**, thư mục **/(root)**, rồi **Save**.
-6. Khi GitHub báo triển khai thành công, mở URL Pages mà GitHub hiển thị.
+1. Chọn **Tải lên phiên bản** trong OneSite.
+2. Tải file `auto-comment-web-inet-v4.1.0.zip`. ZIP có `index.html` ngay ở gốc; không cần giải nén rồi nén lại.
+3. Xem trước giao diện, rồi xuất bản cho tên miền **tranquytruong.top** khi tên miền đã được xác minh và sẵn sàng trong iNET.
+4. Mở **https://tranquytruong.top/**. Extension tự kết nối tại địa chỉ này.
+5. Cài hoặc cập nhật extension 4.1.0 và tải lại tab web. Nếu dùng bản web hoặc extension cũ cùng bản mới, trang yêu cầu cập nhật cả hai.
 
-Ví dụ, nếu dùng tài khoản có sẵn trong gói cũ và repository `auto-binh-luan`:
+Trang Preview của iNET có thể xem giao diện; kết nối extension hoạt động ở tên miền chính thức. Gói này chưa được tải lên hay xuất bản vào tài khoản iNET của bạn.
+
+## File kiểm tra KEY nằm ở đâu?
+
+- `scripts/license-verifier.js`: nhận mã máy từ extension, tải danh sách KEY, đối chiếu quyền sử dụng và lưu kết quả theo ngày trên web.
+- `scripts/license-access-controller.js`: hiển thị KEY, nút Copy/kiểm tra lại và khóa hoặc mở bảng điều khiển.
+- `config/license-config.js`: địa chỉ danh sách KEY. Mặc định giữ nguồn cấp phép hiện có:
 
 ```text
-https://tranquytruong0362683566-gif.github.io/auto-binh-luan/
+https://tranquytruong0362683566-gif.github.io/key/keys.json
 ```
 
-Đây chỉ là địa chỉ mặc định cấu hình trong extension. Gói này chưa được đăng lên tài khoản GitHub của bạn. Nếu tên tài khoản, repository hoặc tên miền khác, dùng URL GitHub Pages thực tế ở bước tiếp theo.
+Extension 4.1.0 chỉ tạo/đọc mã thiết bị `TQT-...`; không tải danh sách hoặc tự xác minh quyền nữa. Mã máy cũ vẫn được dùng nếu cập nhật đúng thư mục extension đang cài.
 
-## Kết nối extension
+ADMIN thêm KEY vào danh sách hiện có như trước. File JSON chấp nhận mảng KEY hoặc dạng:
 
-1. Cài phần `extension` bằng chức năng **Tải tiện ích đã giải nén** trong Chrome.
-2. Mở popup extension.
-3. Dán URL Pages đầy đủ vào **Địa chỉ web GitHub Pages**.
-4. Bấm **Lưu địa chỉ web** và cấp quyền truy cập web khi Chrome hỏi.
-5. Bấm **Mở bảng điều khiển web**. Nếu web đã mở trước khi cài/cập nhật extension, tải lại trang.
-6. Web tự nhận extension, không cần dán ID extension hay sửa manifest.
-7. KEY thiết bị và cơ chế cấp quyền vẫn do extension kiểm tra qua nguồn KEY của gói cũ.
-
-## Chức năng ở phía web
-
-- Bảng điều khiển, nhật ký, hàng đợi và kết quả.
-- Kho mẫu, prompt AI, soạn bình luận AI hoặc thủ công.
-- Cài đặt AI, Apify, nhóm Facebook, bộ lọc và thời gian nghỉ.
-- Điều phối quét, tạo nội dung và gửi lệnh cho extension.
-- Sao lưu/nhập dữ liệu trong mục **Dữ liệu**.
-
-API key được nhập trong **Cài đặt API** trên trình duyệt đang dùng. Bản web không chứa API key được ghi sẵn trong mã. Các yêu cầu OpenAI, FlatKey và Apify được extension thực hiện bằng mã API đóng gói sẵn; web không cần backend để xử lý CORS.
-
-Kho mẫu, cài đặt, lịch sử và key do bạn nhập được lưu cục bộ ở trình duyệt theo địa chỉ web, không lưu vào repository GitHub. Các địa chỉ web khác nhau hoặc trình duyệt khác nhau có vùng dữ liệu riêng. File sao lưu xuất ra cũng là dữ liệu riêng của bạn; không đưa nó vào repository web.
-
-## Chuyển dữ liệu từ bản extension cũ
-
-1. Cập nhật phần extension tại **đúng thư mục đã cài bản cũ**, giữ nguyên ID extension; xem README của extension.
-2. Mở popup và bấm **Xuất dữ liệu extension cũ**.
-3. Xuất file JSON. Mặc định không đưa API key/cookie vào file; có thể chọn bao gồm khi cần.
-4. Mở web mới, bấm **Dữ liệu** hoặc **Nhập dữ liệu cũ**, chọn file và bấm **Nhập dữ liệu**.
-5. Trang tải lại để áp dụng cài đặt và kho mẫu. Nếu không xuất key/cookie, nhập lại ở Cài đặt API/Cài đặt chạy.
-
-## Chạy thử trên máy
-
-Có thể phục vụ thư mục web bằng Python:
-
-```bash
-python -m http.server 8000 --directory web-github
+```json
+{
+  "allowedKeys": [
+    { "key": "THAY_BANG_KEY_TQT_CUA_THIET_BI", "active": true }
+  ]
+}
 ```
 
-Lưu `http://localhost:8000/` trong popup extension, cấp quyền khi Chrome hỏi và mở web. Không mở `index.html` bằng `file://`.
+Thay chuỗi mẫu bằng KEY thực tế có dạng `TQT-` và 27 ký tự hex. `active: false` tắt KEY. Mảng rỗng là danh sách không cấp quyền cho máy nào.
 
-## Khi sử dụng
+Web kiểm tra một lần mỗi ngày và trước lệnh mới khi sang ngày mới. **Kiểm tra lại** luôn tải danh sách mới, kể cả khi KEY đã được cấp quyền. Khi danh sách không truy cập được hoặc định dạng sai, web khóa thao tác và cho phép thử lại. Khi KEY bị từ chối hoặc mất kết nối, vòng tự động dừng nhận lệnh mới. Thao tác đã gửi có thể hoàn tất; kiểm tra kết quả trước khi chạy lại.
 
-Giữ Chrome và tab bảng điều khiển mở trong lúc chạy. GitHub Pages phục vụ giao diện tĩnh; tiến trình tự động được điều phối từ tab web. Khi đóng tab, vòng lặp không tiếp tục nhận lệnh mới; thao tác đã gửi tới extension có thể hoàn tất.
+## Nếu muốn đặt cả danh sách KEY trên web này
 
-Mất kết nối hoặc hết thời gian chờ sẽ không khiến cầu nối tự gửi lại một lệnh bình luận. Kiểm tra kết quả trên Facebook trước khi chủ động chạy lại. Các tính năng Facebook/Shopee vẫn dựa trên cơ chế của gói ban đầu và cần phiên đăng nhập còn hợp lệ.
+1. Sao chép danh sách KEY hiện đang dùng vào `license/keys.json` trong bộ web. Tạo thư mục `license` nếu chưa có.
+2. Trong `config/license-config.js`, đổi `keysSourceUrl` thành `./license/keys.json`.
+3. Tải lại toàn bộ ZIP web lên iNET, xuất bản và bấm **Kiểm tra lại**.
 
-## Kiểm tra đã thực hiện
+Không cần sửa hoặc tải lại extension khi đổi nội dung danh sách hay thuật toán kiểm tra trên web. Khi dùng danh sách từ tên miền khác, máy chủ danh sách phải cho phép trình duyệt đọc bằng CORS; đặt danh sách cùng web sẽ tránh yêu cầu này. Nguồn KEY thật chưa được truy cập/kiểm chứng trong môi trường tạo gói.
 
-Đã kiểm tra cú pháp JavaScript, đường dẫn tài nguyên và 14 tình huống tích hợp mô phỏng bằng mã web, content script, service worker và offscreen thực tế. Xem `TEST_REPORT.txt`.
+Đây là xác minh trong trình duyệt trên website tĩnh; mã kiểm tra và dữ liệu trình duyệt có thể bị sửa. Muốn chống vượt kiểm tra bản quyền cần xác minh trên máy chủ và cơ chế ràng buộc quyền tương ứng ở công cụ.
 
-Môi trường kiểm tra chưa chạy Chrome thật, chưa kiểm tra giao diện bằng trình duyệt và chưa gửi bình luận Facebook hoặc gọi API trả phí thật.
+## Dữ liệu và các chức năng
 
-## Tham khảo chính thức
+Giao diện, kho mẫu, prompt AI, hàng đợi, nhật ký, cài đặt và điều phối nằm trên web. Extension thực hiện thao tác Facebook/Shopee và các request OpenAI, FlatKey, Apify bằng mã đóng gói sẵn. Web không chứa API key ghi sẵn; bạn nhập key riêng trong **Cài đặt API**.
 
-- [Thiết lập nguồn GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
-- [Cơ chế nhắn tin của Chrome Extension](https://developer.chrome.com/docs/extensions/develop/concepts/messaging)
-- [Đăng ký content script](https://developer.chrome.com/docs/extensions/reference/api/scripting)
+Dữ liệu được lưu trên trình duyệt theo địa chỉ website. Giữ cùng tên miền và cùng hồ sơ Chrome để tiếp tục dùng dữ liệu đã lưu. Muốn chuyển dữ liệu, xuất JSON trong mục **Dữ liệu** rồi nhập ở nơi mới. File sao lưu có API key/cookie là dữ liệu riêng, không đăng công khai.
+
+Khi chuyển từ extension cũ, cập nhật extension tại đúng thư mục đang dùng, mở popup → **Xuất dữ liệu extension cũ**, rồi nhập JSON trên web qua **Nhập dữ liệu cũ** hoặc **Dữ liệu**.
+
+## Nếu lưu mã nguồn trên GitHub
+
+Đưa các file/thư mục trong ZIP vào thư mục gốc repository. Có thể giữ GitHub chỉ để lưu mã và dùng iNET để phục vụ web. Nếu chọn GitHub Pages làm hosting, cấu hình custom domain `tranquytruong.top` và DNS tương ứng để web vẫn mở tại địa chỉ chính thức. Extension không kết nối với URL `github.io` hay localhost trong bản này.
+
+## Kiểm tra
+
+20 tình huống tích hợp mô phỏng đã đạt, cùng kiểm tra cú pháp toàn bộ JavaScript. Có kiểm tra nguồn xác minh KEY nằm ở web, cache theo ngày/mã máy/nguồn danh sách, thu hồi KEY, lỗi nguồn, kết nối lại, tên miền cố định, proxy API và sao lưu. Xem `TEST_REPORT.txt`.
+
+Chưa cài extension trên Chrome thật, chưa kiểm tra website iNET đang chạy và chưa gửi bình luận Facebook hay gọi API trả phí thật. Giữ Chrome và tab web mở khi chạy công cụ.

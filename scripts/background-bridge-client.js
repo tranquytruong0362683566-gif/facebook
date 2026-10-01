@@ -1,13 +1,13 @@
 (function () {
   'use strict';
   const CHANNEL = 'tqt-autovip-bridge-v1';
-  const PROTOCOL_VERSION = 1;
+  const PROTOCOL_VERSION = 2;
   const pendingRequests = new Map();
   const readyWaiters = new Set();
   let bridgeConnected = false;
   let stopped = false;
   let extensionVersion = '';
-  let bridgeStatusMessage = 'Chưa kết nối extension. Mở popup extension, lưu đúng địa chỉ web rồi tải lại trang.';
+  let bridgeStatusMessage = 'Chưa kết nối extension. Cài hoặc tải lại extension, rồi mở https://tranquytruong.top/.';
 
   function createRequestId() { return crypto.randomUUID(); }
   function post(kind, detail = {}) {
@@ -98,6 +98,11 @@
     if (!name) throw new Error('Thiếu action gửi tới extension.');
     if (options.signal?.aborted) throw new DOMException('Yêu cầu đã được hủy.', 'AbortError');
     await waitForBridgeReady();
+    if (!['PING_BRIDGE', 'PING', 'ping', 'GET_MACHINE_KEY', 'CANCEL_PROVIDER_API'].includes(name)) {
+      if (!window.TqtWebLicense) throw bridgeError('Web chưa tải được bộ kiểm tra KEY. Tải lại trang.', 'TQT_LICENSE_NOT_READY');
+      await window.TqtWebLicense.requireAuthorized();
+      if (!bridgeConnected) throw bridgeError('Extension đã ngắt kết nối.', 'BRIDGE_DISCONNECTED');
+    }
     if (options.signal?.aborted) throw new DOMException('Yêu cầu đã được hủy.', 'AbortError');
     const requestId = createRequestId();
     const timeoutMs = options.timeoutMs || getBridgeTimeoutMs(name);

@@ -30,7 +30,10 @@
     'FACEBOOK_FEATURE_RESTRICTED',
     'OBJECT_OBJECT_ERROR',
     'BRIDGE_DISCONNECTED',
-    'BRIDGE_TIMEOUT'
+    'BRIDGE_TIMEOUT',
+    'TQT_LICENSE_NOT_FOUND',
+    'TQT_LICENSE_SOURCE_UNAVAILABLE',
+    'TQT_LICENSE_NOT_READY'
   ]);
 
   const CAPTION_FAILURE_CODES = new Set([
@@ -2206,6 +2209,15 @@
     document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshWhenReady(); });
     window.setTimeout(refreshWhenReady, 150);
     window.setInterval(() => { if (!document.hidden) refreshWhenReady(); }, 2000);
+    window.addEventListener('tqt:license-denied', event => {
+      if (!S.isClosedLoopRunning()) return;
+      activeApifyAbortController?.abort();
+      S.setClosedLoopRunning(false);
+      S.setClosedLoopPaused(false);
+      fatalStopMessage = event.detail?.message || 'KEY chưa được cấp quyền. Kiểm tra lại KEY trước khi chạy.';
+      updatePauseButton();
+      S.setBridgeStatus(fatalStopMessage, 'error');
+    });
     window.addEventListener('autovip:bridge-status', event => {
       if (event.detail?.connected || !S.isClosedLoopRunning()) return;
       activeApifyAbortController?.abort();

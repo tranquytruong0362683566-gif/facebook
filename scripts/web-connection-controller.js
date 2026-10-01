@@ -5,18 +5,17 @@
   const gateStatus = document.getElementById('webBridgeStatus');
   const dataDialog = document.getElementById('webDataDialog');
   const backupStatus = document.getElementById('webBackupStatus');
-  const pageUrl = new URL(location.href);
-  pageUrl.search = '';
-  pageUrl.hash = '';
-  pageUrl.pathname = pageUrl.pathname.replace(/index\.html$/i, '');
-  if (!/\.[a-z0-9]+$/i.test(pageUrl.pathname) && !pageUrl.pathname.endsWith('/')) pageUrl.pathname += '/';
-  address.value = pageUrl.href;
+  const dashboardUrl = window.TqtLicenseConfig.dashboardUrl;
+  address.value = dashboardUrl;
 
   function renderConnection() {
     const state = window.fbBridgeApi.getBridgeStatus();
     status.textContent = state.connected ? `Extension ${state.extensionVersion} · Đã kết nối` : 'Extension · Chưa kết nối';
     status.dataset.connected = String(state.connected);
-    gateStatus.textContent = state.message;
+    const isOfficialPage = location.origin === new URL(dashboardUrl).origin
+      && ['/', '/index.html'].includes(location.pathname);
+    gateStatus.textContent = isOfficialPage ? state.message
+      : 'Mở https://tranquytruong.top/ để kết nối extension. Trang xem trước chỉ hiển thị giao diện.';
   }
   window.addEventListener('autovip:bridge-status', renderConnection);
   document.getElementById('webReconnectBtn').addEventListener('click', () => window.fbBridgeApi.reconnect());
