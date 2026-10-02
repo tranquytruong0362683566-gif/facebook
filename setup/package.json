@@ -1,0 +1,14 @@
+{
+  "name": "tqt-admin-verification",
+  "version": "4.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:database": "node tests/database.mjs",
+    "test:browser": "node tests/browser.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "playwright": "1.62.1"
+  }
+}

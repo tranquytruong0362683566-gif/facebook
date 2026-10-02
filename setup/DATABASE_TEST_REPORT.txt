@@ -1,0 +1,11 @@
+PASS: Schema and ADMIN bootstrap execute on actual PostgreSQL
+PASS: Anonymous and non-ADMIN users cannot read tables, list devices or approve keys
+PASS: New registration defaults to pending; repeat visits create one row and no stored plaintext token
+PASS: A different installation token cannot claim or use an existing KEY
+PASS: ADMIN can approve and block; stale edits fail without overwriting newer changes
+PASS: Server time enforces expiry and administrator filters use effective status
+PASS: Resetting a registration revokes permission until ADMIN approves the replacement
+PASS: Malformed inputs and excessive query limits fail; audit entries exclude credential hashes
+
+8 PostgreSQL checks passed.
+Embedded PostgreSQL via PGlite; auth.users/auth.uid are test fixtures, not a live Supabase project.

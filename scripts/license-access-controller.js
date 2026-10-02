@@ -42,7 +42,7 @@
     } else {
       const message = data.message || 'KEY chưa được ADMIN cấp quyền. Thêm KEY rồi bấm Kiểm tra lại.';
       lockDashboard(message);
-      setStatus(message, data.code === 'TQT_LICENSE_NOT_FOUND' ? 'waiting' : 'error');
+      setStatus(message, ['TQT_LICENSE_NOT_FOUND', 'TQT_LICENSE_PENDING'].includes(data.code) ? 'waiting' : 'error');
     }
   }
   function checkLicense(forceRefresh = false) {
@@ -76,7 +76,7 @@
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && window.fbBridgeApi.bridgeAvailable()) checkLicense();
   });
-  const timer = setInterval(() => { if (window.fbBridgeApi.bridgeAvailable()) checkLicense(); }, 60000);
+  const timer = setInterval(() => { if (window.fbBridgeApi.bridgeAvailable()) checkLicense(); }, 30000);
   window.addEventListener('pagehide', event => { if (!event.persisted) clearInterval(timer); });
   lockDashboard();
   checkLicense();
