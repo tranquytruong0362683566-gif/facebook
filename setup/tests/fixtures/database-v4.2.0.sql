@@ -48,21 +48,31 @@ returns boolean language sql stable security definer set search_path = '' as $$
     and exists(select 1 from tqt_private.license_admins a where a.user_id = auth.uid());
 $$;
 
--- Keep the legacy second argument so extension/web 4.2.0 still works.
--- Approval belongs to the KEY; the installation token is intentionally ignored.
-create or replace function public.tqt_register_device(p_machine_key text, p_device_token text default null)
+create or replace function public.tqt_register_device(p_machine_key text, p_device_token text)
 returns jsonb language plpgsql security definer set search_path = '' as $$
 declare
   v_key text := upper(trim(p_machine_key));
+  v_hash text;
   v_device public.tqt_device_licenses%rowtype;
   v_status text;
 begin
-  if v_key is null or v_key !~ '^TQT-[A-F0-9]{27}$' then
-    raise exception using errcode = '22023', message = 'KEY thiết bị không hợp lệ.';
+  if v_key is null or v_key !~ '^TQT-[A-F0-9]{27}$'
+    or p_device_token is null or p_device_token !~ '^[A-F0-9]{64}$' then
+    raise exception using errcode = '22023', message = 'KEY hoặc định danh thiết bị không hợp lệ.';
   end if;
-  insert into public.tqt_device_licenses(machine_key)
-    values (v_key) on conflict (machine_key) do nothing;
+  v_hash := encode(sha256(convert_to(p_device_token, 'UTF8')), 'hex');
+  insert into public.tqt_device_licenses(machine_key, credential_hash)
+    values (v_key, v_hash) on conflict (machine_key) do nothing;
   select * into v_device from public.tqt_device_licenses where machine_key = v_key for update;
+  -- ADMIN may reset a registration to pending before a replacement installation claims it.
+  if v_device.credential_hash is null then
+    update public.tqt_device_licenses set credential_hash = v_hash where machine_key = v_key;
+    v_device.credential_hash := v_hash;
+  end if;
+  if v_device.credential_hash <> v_hash then
+    return jsonb_build_object('authorized', false, 'machineKey', v_key, 'status', 'registration_conflict',
+      'message', 'KEY đã gắn với một bản cài extension khác. Liên hệ ADMIN để đăng ký lại.');
+  end if;
   if v_device.last_seen_at < now() - interval '30 seconds' then
     update public.tqt_device_licenses set last_seen_at = now() where machine_key = v_key;
   end if;
@@ -142,7 +152,6 @@ begin
 end;
 $$;
 
--- Legacy ADMIN API retained for compatibility; the new ADMIN page does not use it.
 create or replace function public.tqt_admin_reset_registration(p_machine_key text, p_expected_revision bigint)
 returns jsonb language plpgsql security definer set search_path = '' as $$
 declare v_old public.tqt_device_licenses%rowtype; v_new public.tqt_device_licenses%rowtype;

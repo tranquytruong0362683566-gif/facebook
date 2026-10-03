@@ -30,13 +30,13 @@
   }
   async function getIdentity(checkEpoch) {
     if (!identity) {
-      const response = await window.fbBridgeApi.sendRawBridge('GET_DEVICE_REGISTRATION');
+      const response = await window.fbBridgeApi.sendRawBridge('GET_MACHINE_KEY');
       if (checkEpoch !== epoch || !window.fbBridgeApi.bridgeAvailable()) throw disconnectedError();
       const value = window.fbBridgeApi.bridgeResponseData(response);
-      if (!/^TQT-[A-F0-9]{27}$/.test(value?.machineKey || '') || !/^[A-F0-9]{64}$/.test(value?.deviceToken || '')) {
-        throw new Error('Cập nhật extension 4.2.0 để đăng ký KEY.');
+      if (!/^TQT-[A-F0-9]{27}$/.test(value?.machineKey || '')) {
+        throw new Error('Không đọc được KEY thiết bị từ extension.');
       }
-      identity = { machineKey: value.machineKey, deviceToken: value.deviceToken };
+      identity = { machineKey: value.machineKey };
     }
     return identity;
   }
@@ -50,11 +50,14 @@
         const now = Date.now();
         if (!forceRefresh && cache?.machineKey === device.machineKey && cache.validUntil > now) return { ...cache };
         if (!api) api = window.TqtSupabaseApi.createClient(window.TqtLicenseConfig);
+        if (window.fbBridgeApi.getBridgeStatus().extensionVersion.startsWith('5.')) {
+          await window.fbBridgeApi.sendRawBridge('SUITE_CONFIGURE', {config:window.TqtLicenseConfig});
+        }
         controller = new AbortController();
         const current = controller;
         let result;
-        try { result = await api.rpc('tqt_register_device', { p_machine_key: device.machineKey,
-          p_device_token: device.deviceToken }, { signal: current.signal }); }
+        try { result = await api.rpc('tqt_register_device', { p_machine_key: device.machineKey },
+          { signal: current.signal }); }
         finally { if (controller === current) controller = null; }
         if (checkEpoch !== epoch || !window.fbBridgeApi.bridgeAvailable()) throw disconnectedError();
         if (result?.machineKey !== device.machineKey || !Object.hasOwn(codes, result.status)
@@ -77,7 +80,7 @@
           : error.code === 'TQT_SETUP_REQUIRED' ? error.code : 'TQT_LICENSE_SOURCE_UNAVAILABLE';
         return publish({ machineKey: identity?.machineKey || '', authorized: false, code,
           checkedAt: Date.now(), validUntil: Date.now() + (connected ? 5000 : 0),
-          message: code === 'BRIDGE_DISCONNECTED' ? 'Chưa kết nối extension. Mở tranquytruong.top cùng extension 4.2.0.'
+          message: code === 'BRIDGE_DISCONNECTED' ? 'Chưa kết nối extension. Mở tranquytruong.top cùng extension CODE by TQT 5.0.0.'
             : code === 'TQT_SETUP_REQUIRED' ? 'Hệ thống cấp quyền chưa được cấu hình. Liên hệ ADMIN.'
               : `Không kiểm tra được quyền KEY: ${error.message}` });
       }

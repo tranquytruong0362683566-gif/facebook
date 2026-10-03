@@ -78,7 +78,9 @@ try {
           tqt_admin_list_licenses:['select public.tqt_admin_list_licenses($1,$2,$3,$4) as data',[params.p_search,params.p_status,params.p_offset,params.p_limit]],
           tqt_admin_update_license:['select public.tqt_admin_update_license($1,$2,$3,$4,$5,$6) as data',[params.p_machine_key,params.p_status,params.p_customer_name,params.p_note,params.p_expires_at,params.p_expected_revision]],
           tqt_admin_reset_registration:['select public.tqt_admin_reset_registration($1,$2) as data',[params.p_machine_key,params.p_expected_revision]],
-          tqt_register_device:['select public.tqt_register_device($1,$2) as data',[params.p_machine_key,params.p_device_token]]
+          tqt_register_device:Object.hasOwn(params,'p_device_token')
+            ? ['select public.tqt_register_device($1,$2) as data',[params.p_machine_key,params.p_device_token]]
+            : ['select public.tqt_register_device($1) as data',[params.p_machine_key]]
         };
         const query=queries[url.pathname.split('/').at(-1)];
         if(!query)throw new Error('Unsupported test API');

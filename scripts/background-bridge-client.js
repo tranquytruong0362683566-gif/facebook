@@ -1,5 +1,11 @@
 (function () {
   'use strict';
+  const referrer = document.referrer || new URLSearchParams(location.search).get('bridgeOrigin') || '';
+  const embedded = window.parent !== window;
+  const parentUrl = referrer ? new URL(referrer) : null;
+  const parentOrigin = parentUrl ? parentUrl.protocol + '//' + parentUrl.host : '';
+  const endpoint = embedded && (parentOrigin === location.origin || parentUrl?.protocol === 'chrome-extension:') ? window.parent : window;
+  const targetOrigin = endpoint === window ? location.origin : parentOrigin;
   const CHANNEL = 'tqt-autovip-bridge-v1';
   const PROTOCOL_VERSION = 3;
   const pendingRequests = new Map();
@@ -11,8 +17,8 @@
 
   function createRequestId() { return crypto.randomUUID(); }
   function post(kind, detail = {}) {
-    window.postMessage({ channel: CHANNEL, direction: 'web-to-extension',
-      protocolVersion: PROTOCOL_VERSION, kind, ...detail }, location.origin);
+    endpoint.postMessage({ channel: CHANNEL, direction: 'web-to-extension',
+      protocolVersion: PROTOCOL_VERSION, kind, ...detail }, targetOrigin);
   }
   function bridgeError(message, code) {
     const error = new Error(message);
@@ -21,6 +27,7 @@
   }
   function getBridgeTimeoutMs(action) {
     if (/SCAN_GROUP|SCAN_LINK|SCAN_FACEBOOK_POSTS/i.test(action)) return 15 * 60 * 1000;
+    if (action === 'SUITE_RPC') return 65 * 60 * 1000;
     if (action === 'REQUEST_PROVIDER_API') return 310000;
     if (/SHOPEE|CUSTOM_LINK|AFFILIATE/i.test(action)) return 3 * 60 * 1000;
     if (/COMMENT/i.test(action)) return 4 * 60 * 1000;
@@ -55,7 +62,7 @@
     }));
   }
   function onMessage(event) {
-    if (stopped || event.source !== window || event.origin !== location.origin) return;
+    if (stopped || event.source !== endpoint || event.origin !== targetOrigin) return;
     const data = event.data;
     if (!data || data.channel !== CHANNEL || data.direction !== 'extension-to-web') return;
     if (data.protocolVersion !== PROTOCOL_VERSION) {
@@ -67,6 +74,7 @@
       setBridgeConnectionState(data.connected === true, String(data.message || ''));
       return;
     }
+    if (data.kind === 'event') { window.dispatchEvent(new CustomEvent('tqt:suite-event', {detail:data.event})); return; }
     if (data.kind !== 'response') return;
     const requestId = String(data.requestId || '');
     const entry = pendingRequests.get(requestId);
@@ -98,7 +106,11 @@
     if (!name) throw new Error('Thiếu action gửi tới extension.');
     if (options.signal?.aborted) throw new DOMException('Yêu cầu đã được hủy.', 'AbortError');
     await waitForBridgeReady();
-    if (!['PING_BRIDGE', 'PING', 'ping', 'GET_MACHINE_KEY', 'GET_DEVICE_REGISTRATION', 'CANCEL_PROVIDER_API'].includes(name)) {
+    const safeSuiteStop = name === 'SUITE_RPC' && (
+      payload.kind === 'tool' && ['VIDEO_POST_ABORT', 'NATIVE_GROUP_POST_CANCEL', 'PAGE_VIDEO_LOCK_RELEASE', 'FBRS_CANCEL_QUEUE', 'TT_STOP_SCAN', 'TT_PAUSE_DOWNLOAD'].includes(payload.message?.type)
+      || payload.kind === 'api' && payload.module === 'groupsApi' && ['abortActiveVideo', 'abortMultiGroup'].includes(payload.method)
+    );
+    if (!safeSuiteStop && !['PING_BRIDGE', 'PING', 'ping', 'GET_MACHINE_KEY', 'GET_DEVICE_REGISTRATION', 'CANCEL_PROVIDER_API', 'SUITE_CONFIGURE', 'SUITE_CANCEL'].includes(name)) {
       if (!window.TqtWebLicense) throw bridgeError('Web chưa tải được bộ kiểm tra KEY. Tải lại trang.', 'TQT_LICENSE_NOT_READY');
       await window.TqtWebLicense.requireAuthorized();
       if (!bridgeConnected) throw bridgeError('Extension đã ngắt kết nối.', 'BRIDGE_DISCONNECTED');

@@ -1,0 +1,25 @@
+PASS: Web and extension handshake through actual worker/content bridge
+PASS: Manifest automatically injects the fixed domain; legacy dynamic registration is removed
+PASS: Correct project path/index alias accepted; foreign page, origin and frame rejected
+PASS: Worker denies an untrusted page even when it spoofs an internal source
+PASS: Extension supplies the existing machine key without any license checking
+PASS: Web checks the existing KEY without creating or sending an installation credential
+PASS: Two extension credentials for the same approved KEY leave web authorization unchanged
+PASS: Pending, blocked, expired and legacy conflicting registrations lock the dashboard before sending actions
+PASS: Short-lived in-memory status coalesces checks and honors revocation after expiry
+PASS: Backend failure and malformed responses lock the dashboard; manual retry recovers
+PASS: Reconnection rereads the KEY and does not reuse another KEY status
+PASS: AI and Apify proxy round trip uses packaged offscreen code without browser CORS
+PASS: Proxy preserves HTTP errors and blocks arbitrary destinations before fetch
+PASS: Caller cancellation reaches the offscreen fetch and closes the request
+PASS: Large API responses are rejected at 20 MB
+PASS: Unsupported aliases may fall back; unknown completion never replays a mutation
+PASS: Same-origin and window checks reject messages from a foreign frame
+PASS: Popup opens the fixed website; saved or injected URLs cannot change it
+PASS: Backups exclude secrets by default and restore chosen values
+PASS: HTML assets resolve from GitHub project paths and extension pages; no published credential
+
+20 checks passed.
+
+Environment: Node v24.19.0, VM simulations of Chrome APIs and HTTP responses.
+No live Facebook comments, logins, paid API requests, Chrome loading or browser rendering were performed.

@@ -1,0 +1,21 @@
+PASS: Unified module service worker loads all four packaged engines without duplicate action handlers
+PASS: Core checks approval with the existing device KEY and fixed Supabase project
+PASS: Real worker port accepts the packaged Side Panel and rejects untrusted pages and forged offscreen messages
+PASS: Group and Page messages route independently, including identical callback conventions
+PASS: Scoped storage prevents access to backend config and another tool settings
+PASS: Downloader picks source tabs; page code cannot inject functions or arbitrary files
+PASS: Pending, blocked and expired approvals deny every tool while stop/release remains usable
+PASS: Expired server timestamps deny approval even if status says approved; network failures fail closed
+PASS: Member home matches the reference layout, exposes four tools and preserves protected ADMIN files
+PASS: Group UI reads the session through the packaged DOM parser, cookie bridge and native request core
+PASS: Page UI runs native Ads Manager token discovery and streams managed Page callbacks
+PASS: Native API bridge transfers a File in chunks and publishes through packaged photo code with progress callbacks
+PASS: Transfer storage rejects wrong owners, missing chunks, out-of-order and duplicate concurrent writes
+PASS: Cancelling an active native upload reaches the packaged AbortController and keeps unknown outcome information
+PASS: Facebook and TikTok scanning/results UIs share the native core and same approved KEY
+PASS: Auto-comment retains the existing tools; switching tools preserves unsent group drafts
+PASS: Side Panel widths and mobile navigation fit without horizontal overflow
+PASS: Each tool fits the Side Panel and its external menu still selects the native tool section
+PASS: All loaded tool assets resolve and no browser runtime errors occur
+
+Real headless Chromium renders actual UI and packaged core modules. Chrome APIs, Supabase, Facebook and network responses are synthetic fixtures. Native Side Panel loading in a full desktop Chrome is not automated in this runtime.

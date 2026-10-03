@@ -59,10 +59,10 @@
       <label for="noteInput">Ghi chú</label><textarea id="noteInput" rows="3" maxlength="1000" placeholder="Ghi chú riêng cho ADMIN"></textarea>
       <p id="editStatus" class="message" role="status" aria-live="polite"></p>
       <div class="dialog-actions"><button id="approveBtn" class="primary" type="button">Cấp quyền</button><button id="blockBtn" class="danger" type="button">Khóa KEY</button><button id="saveLicenseBtn" class="secondary" type="submit">Lưu thay đổi</button></div>
-      <details class="registration-reset"><summary>Đăng ký lại extension</summary><p>Dùng khi khách đã gỡ/cài lại extension hoặc KEY báo gắn với bản cài khác. Quyền hiện tại bị hủy và KEY trở về Chờ duyệt.</p><button id="resetRegistrationBtn" class="danger" type="button">Cho phép đăng ký lại</button></details>
+      <p class="message">Mọi bản cài extension dùng cùng KEY sẽ chung quyền và hạn sử dụng này.</p>
     </form>
   </dialog>
-  <footer>Trần Quý Trường · Quản trị KEY 4.2.0</footer>
+  <footer>Trần Quý Trường · Quản trị KEY 4.2.1</footer>
   <script src="../config/license-config.js"></script>
   <script src="../shared/supabase-api.js"></script>
   <script src="admin.js"></script>

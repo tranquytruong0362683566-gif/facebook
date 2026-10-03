@@ -112,30 +112,26 @@
     message('editStatus'); $('editDialog').showModal();
   }
   function disableEditor(disabled) {
-    for (const id of ['approveBtn','blockBtn','saveLicenseBtn','resetRegistrationBtn','closeEditBtn']) $(id).disabled = disabled;
+    for (const id of ['approveBtn','blockBtn','saveLicenseBtn','closeEditBtn']) $(id).disabled = disabled;
   }
-  async function saveLicense(overrideStatus = null, resetRegistration = false) {
+  async function saveLicense(overrideStatus = null) {
     if (!authorized || !editing || saving) return;
     if (!$('editForm').reportValidity()) return;
     const epoch = authEpoch;
     const row = { ...editing };
     saving = true; disableEditor(true); message('editStatus', 'Đang lưu...');
     try {
-      let params;
-      if (resetRegistration) params = { p_machine_key: row.machine_key, p_expected_revision: row.revision };
-      else {
-        const expiration = $('expiresAtInput').value;
-        const date = expiration ? new Date(expiration) : null;
-        if (date && !Number.isFinite(date.getTime())) throw new Error('Hạn sử dụng không hợp lệ.');
-        if (overrideStatus === 'approved' && date && date.getTime() <= Date.now()) {
-          throw new Error('Chọn hạn dùng trong tương lai hoặc để trống trước khi cấp quyền.');
-        }
-        params = { p_machine_key: row.machine_key, p_expected_revision: row.revision,
-          p_status: overrideStatus || $('licenseStatusInput').value,
-          p_customer_name: $('customerNameInput').value.trim(), p_note: $('noteInput').value,
-          p_expires_at: date ? date.toISOString() : null };
+      const expiration = $('expiresAtInput').value;
+      const date = expiration ? new Date(expiration) : null;
+      if (date && !Number.isFinite(date.getTime())) throw new Error('Hạn sử dụng không hợp lệ.');
+      if (overrideStatus === 'approved' && date && date.getTime() <= Date.now()) {
+        throw new Error('Chọn hạn dùng trong tương lai hoặc để trống trước khi cấp quyền.');
       }
-      await api.rpc(resetRegistration ? 'tqt_admin_reset_registration' : 'tqt_admin_update_license', params, { admin: true });
+      const params = { p_machine_key: row.machine_key, p_expected_revision: row.revision,
+        p_status: overrideStatus || $('licenseStatusInput').value,
+        p_customer_name: $('customerNameInput').value.trim(), p_note: $('noteInput').value,
+        p_expires_at: date ? date.toISOString() : null };
+      await api.rpc('tqt_admin_update_license', params, { admin: true });
       if (epoch !== authEpoch || !authorized) return;
       $('editDialog').close(); editing = null;
       await loadRows();
@@ -171,9 +167,6 @@
   $('editForm').addEventListener('submit', event => { event.preventDefault(); saveLicense(); });
   $('approveBtn').addEventListener('click', () => saveLicense('approved'));
   $('blockBtn').addEventListener('click', () => saveLicense('blocked'));
-  $('resetRegistrationBtn').addEventListener('click', () => {
-    if (confirm('Hủy quyền hiện tại và cho phép KEY đăng ký lại extension? KEY sẽ trở về Chờ duyệt.')) saveLicense(null, true);
-  });
   document.addEventListener('visibilitychange', () => { if (!document.hidden && authorized) loadRows(); });
   const poll = setInterval(() => { if (authorized && !document.hidden && !editing && !saving) loadRows(); }, 30000);
   window.addEventListener('pagehide', event => { if (!event.persisted) { clearInterval(poll); loadController?.abort(); } });
