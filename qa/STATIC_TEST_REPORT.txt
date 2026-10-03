@@ -1,4 +1,0 @@
-PASS: Syntax validated for 150 JavaScript/module files.
-PASS: All relative module imports and 18 manifest resource references resolve.
-PASS: 7 admin/database/API files byte-for-byte unchanged from current web 4.2.1 ZIP.
-PASS: One native side_panel, module service worker and no action popup in manifest.

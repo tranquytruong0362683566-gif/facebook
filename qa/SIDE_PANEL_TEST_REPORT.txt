@@ -1,5 +1,0 @@
-PASS: Native Side Panel loads the fixed member website and opens the packaged account manager
-PASS: Side Panel rejects forged origins/sources and duplicate requests while forwarding its real web frame
-PASS: Side Panel returns results to the fixed origin and releases timers/pending calls when closed
-
-Actual packaged panel.js evaluated with simulated Chrome/DOM APIs; native desktop Side Panel rendering is not automated.
