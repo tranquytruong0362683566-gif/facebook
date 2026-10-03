@@ -1,61 +1,25 @@
-TQT WEB / ADMIN / EXTENSION 4.2.0
-Verified: 2026-10-01
+CODE by TQT — Unified suite 5.0.0
+Test date: 2026-10-03
 
-34 functional checks passed: 19 integration, 8 PostgreSQL, 7 Chromium.
-38 JavaScript/MJS files passed node --check; all JSON parsed.
-All local HTML assets resolved. Release config has no live project URL/key.
-Desktop and mobile login screenshots and the device list were visually reviewed.
+PASS: 8 runtime/core/permission checks with the actual packaged service worker.
+PASS: 11 Chromium UI/native-module integration checks.
+PASS: 3 packaged Side Panel bridge/lifecycle checks with simulated DOM/Chrome APIs.
+22 functional checks passed. See qa reports for detail.
 
-WEB / EXTENSION INTEGRATION
-PASS: Web and extension handshake through actual worker/content bridge
-PASS: Manifest automatically injects the fixed domain; legacy dynamic registration is removed
-PASS: Correct project path/index alias accepted; foreign page, origin and frame rejected
-PASS: Worker denies an untrusted page even when it spoofs an internal source
-PASS: Extension supplies the existing machine key without any license checking
-PASS: Web registers the existing key with a persistent installation credential
-PASS: Pending, blocked, expired and conflicting registrations lock the dashboard before sending actions
-PASS: Short-lived in-memory status coalesces checks and honors revocation after expiry
-PASS: Backend failure and malformed responses lock the dashboard; manual retry recovers
-PASS: Reconnection rereads the installation identity and does not reuse another device status
-PASS: AI and Apify proxy round trip uses packaged offscreen code without browser CORS
-PASS: Proxy preserves HTTP errors and blocks arbitrary destinations before fetch
-PASS: Caller cancellation reaches the offscreen fetch and closes the request
-PASS: Large API responses are rejected at 20 MB
-PASS: Unsupported aliases may fall back; unknown completion never replays a mutation
-PASS: Same-origin and window checks reject messages from a foreign frame
-PASS: Popup opens the fixed website; saved or injected URLs cannot change it
-PASS: Backups exclude secrets by default and restore chosen values
-PASS: HTML assets resolve from GitHub project paths and extension pages; no published credential
+Verified: four engines, native port trust checks, shared approved KEY, denial for
+pending/blocked/expired keys, storage scope, source tabs, Page callbacks,
+File chunk ownership/order/completion/concurrency, upload cancellation with
+unknown outcome information, responsive member/tool layouts, preserved drafts,
+no missing loaded assets and no browser runtime errors.
 
-19 checks passed.
+Three admin files, three database/migration SQL files and the shared Supabase
+API helper are byte-for-byte unchanged from the current web 4.2.1 ZIP.
 
-Environment: Node v24.19.0, VM simulations of Chrome APIs and HTTP responses.
-This suite uses VM simulation; browser rendering is covered by the separate Chromium suite below.
+Chrome APIs, Supabase, Facebook and API responses are synthetic fixtures.
+Real Chromium renders the website and executes actual packaged core modules;
+it does not load the native desktop extension in this environment.
+Native desktop Side Panel smoke testing is required after installing in Chrome.
+No live Facebook posts/comments, Supabase authentication, GitHub deployment or
+paid API calls were performed. Packages contain no real publishable key.
 
-POSTGRESQL / AUTHORIZATION
-PASS: Schema and ADMIN bootstrap execute on actual PostgreSQL
-PASS: Anonymous and non-ADMIN users cannot read tables, list devices or approve keys
-PASS: New registration defaults to pending; repeat visits create one row and no stored plaintext token
-PASS: A different installation token cannot claim or use an existing KEY
-PASS: ADMIN can approve and block; stale edits fail without overwriting newer changes
-PASS: Server time enforces expiry and administrator filters use effective status
-PASS: Resetting a registration revokes permission until ADMIN approves the replacement
-PASS: Malformed inputs and excessive query limits fail; audit entries exclude credential hashes
-
-8 PostgreSQL checks passed.
-Embedded PostgreSQL via PGlite; auth.users/auth.uid are test fixtures, not a live Supabase project.
-
-CHROMIUM / ADMIN INTERFACE
-PASS: Login page renders on desktop and mobile without horizontal overflow
-PASS: Incorrect password and authenticated non-ADMIN accounts cannot enter management
-PASS: ADMIN login checks the server role; session restores and table content does not execute HTML
-PASS: Approving a KEY saves customer, notes and local expiry through the protected database RPC
-PASS: Blocking and status/search filters reflect actual server permissions
-PASS: Conflicting edits are rejected instead of silently overwriting another ADMIN session
-PASS: Logout clears the visible data and session; no browser runtime errors occurred
-
-7 browser checks passed.
-Real headless Chromium with actual application files and PostgreSQL RPC functions. Supabase Auth HTTP responses and JWT identity mapping are simulated. No live Supabase/GitHub deployment or Facebook actions were performed.
-
-Deployment limitation: no live Supabase account, JWT verification, GitHub deployment, extension installation, Facebook/Shopee actions or paid API requests were tested.
-The supplied SQL and frontend must be configured and deployed in the owner account using HUONG-DAN-ADMIN.md.
+The setup/ reports belong to database/admin release 4.2.1 and are historical.

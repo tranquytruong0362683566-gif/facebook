@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Facebook Reels Scanner">
+  <defs>
+    <linearGradient id="bg" x1="16" y1="10" x2="116" y2="122" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1877f2"/>
+      <stop offset="1" stop-color="#7448ff"/>
+    </linearGradient>
+    <linearGradient id="arrow" x1="64" y1="65" x2="64" y2="111" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#63f3c4"/>
+      <stop offset="1" stop-color="#20c997"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="27" fill="#0b1633"/>
+  <rect x="11" y="11" width="106" height="106" rx="22" fill="url(#bg)"/>
+  <rect x="26" y="23" width="76" height="70" rx="15" fill="#fff" opacity=".96"/>
+  <path d="M55 41.5c0-4.1 4.5-6.5 7.9-4.2l24 16.4c3 2 3 6.5 0 8.5l-24 16.4c-3.4 2.3-7.9-.1-7.9-4.2V41.5Z" fill="#1877f2"/>
+  <path d="M42 83h44v14H42z" fill="#0b1633" opacity=".12"/>
+  <path d="M64 72v30m0 0L50 88m14 14 14-14" fill="none" stroke="url(#arrow)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M43 108h42" fill="none" stroke="#eafff8" stroke-width="7" stroke-linecap="round"/>
+</svg>

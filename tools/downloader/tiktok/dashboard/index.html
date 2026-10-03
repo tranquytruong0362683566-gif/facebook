@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="vi" class="license-pending">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bảng kết quả TikTok</title>
+    <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="../../../../suite/embedded.css"><script src="../../../../suite/client.js" data-tool="downloader"></script></head>
+  <body>
+    <section
+      id="licenseGate"
+      class="license-gate"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="licenseGateTitle"
+    >
+      <div class="license-card">
+        <div class="license-mark" aria-hidden="true">KEY</div>
+        <p class="license-eyebrow">Xác thực bản quyền TikTok</p>
+        <h1 id="licenseGateTitle">Thiết bị chưa được cấp quyền</h1>
+        <p class="license-instruction">
+          Copy KEY này và gửi cho ADMIN ZALO: <strong>0362683566</strong>
+        </p>
+        <label for="tqtMachineKeyInput">KEY của extension</label>
+        <div class="license-key-row">
+          <input
+            id="tqtMachineKeyInput"
+            type="text"
+            value="Đang tạo KEY..."
+            readonly
+            spellcheck="false"
+            aria-label="KEY cố định của extension TikTok"
+          />
+          <button id="copyTqtMachineKeyBtn" class="button primary" type="button">
+            Copy KEY
+          </button>
+        </div>
+        <p
+          id="tqtLicenseStatus"
+          class="license-status"
+          data-state="checking"
+          aria-live="polite"
+        >
+          Đang kiểm tra KEY chung trên tranquytruong.top...
+        </p>
+        <button
+          id="retryTqtLicenseBtn"
+          class="button secondary license-retry-button"
+          type="button"
+        >
+          Kiểm tra lại
+        </button>
+      </div>
+    </section>
+
+    <div id="tiktokApp" inert aria-hidden="true">
+      <header class="app-header">
+        <div class="header-inner">
+          <div class="brand">
+            <div class="brand-mark" aria-hidden="true">TT</div>
+            <div>
+              <p class="eyebrow">Bảng điều khiển</p>
+              <h1>Kho video TikTok đã quét</h1>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button id="refreshBtn" class="button secondary compact" type="button">
+              Làm mới
+            </button>
+            <button
+              id="closeDashboardBtn"
+              class="button ghost compact"
+              type="button"
+            >
+              Đóng trang
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="app-main">
+        <section class="overview-card" aria-labelledby="overviewHeading">
+          <div class="overview-copy">
+            <div class="overview-title-row">
+              <div>
+                <p class="eyebrow">Dữ liệu đồng bộ từ bảng quét</p>
+                <h2 id="overviewHeading">Kết quả hiện tại</h2>
+              </div>
+              <span id="scanStatusBadge" class="status-badge idle">Sẵn sàng</span>
+            </div>
+            <p id="scanSummary" class="scan-summary" aria-live="polite">
+              Chưa có tiến trình quét.
+            </p>
+            <p class="source-line">
+              Nguồn: <strong id="sourceName">Chưa chọn nguồn</strong>
+            </p>
+          </div>
+
+          <div class="metric-grid">
+            <article class="metric-card">
+              <span>Tổng video</span>
+              <strong id="totalVideos">0</strong>
+            </article>
+            <article class="metric-card accent">
+              <span>Đã chọn</span>
+              <strong id="selectedVideos">0</strong>
+            </article>
+          </div>
+        </section>
+
+        <section
+          id="downloadPanel"
+          class="download-panel"
+          aria-labelledby="downloadHeading"
+          hidden
+        >
+          <div class="download-info">
+            <div class="download-title-row">
+              <div>
+                <p class="eyebrow">Hàng đợi tải xuống</p>
+                <h2 id="downloadHeading">Tiến trình tải video</h2>
+              </div>
+              <span id="downloadSummary">0 video</span>
+            </div>
+            <div
+              class="progress-track download-track"
+              role="progressbar"
+              aria-label="Tiến trình tải xuống"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+            >
+              <div id="downloadProgressFill" class="progress-fill download"></div>
+            </div>
+            <p id="downloadCurrent" class="download-current">Đang chờ...</p>
+          </div>
+          <div class="download-controls">
+            <button
+              id="pauseDownloadBtn"
+              class="button secondary"
+              type="button"
+              aria-pressed="false"
+              disabled
+            >
+              Tạm dừng
+            </button>
+            <button id="clearDownloadBtn" class="button ghost" type="button">
+              Xóa lịch sử tải
+            </button>
+          </div>
+        </section>
+
+        <section class="results-card" aria-labelledby="resultsHeading">
+          <div class="results-heading">
+            <div>
+              <p class="eyebrow">Danh sách đầy đủ</p>
+              <h2 id="resultsHeading">Video đã quét</h2>
+              <p id="resultSummary">Chưa có dữ liệu</p>
+            </div>
+            <button id="clearResultsBtn" class="button danger subtle" type="button">
+              Xóa toàn bộ kết quả
+            </button>
+          </div>
+
+          <div class="toolbar" aria-label="Công cụ quản lý kết quả">
+            <label class="search-field" for="searchInput">
+              <span class="sr-only">Tìm trong kết quả</span>
+              <input
+                id="searchInput"
+                type="search"
+                placeholder="Tìm caption, tác giả hoặc ID video..."
+              />
+            </label>
+
+            <label class="quality-field" for="qualitySelect">
+              <span>Chất lượng</span>
+              <select id="qualitySelect">
+                <option value="hd">HD nếu có</option>
+                <option value="normal">Tiêu chuẩn</option>
+              </select>
+            </label>
+
+            <label class="select-all" for="selectAllCheckbox">
+              <input id="selectAllCheckbox" type="checkbox" />
+              <span>Chọn tất cả đang hiển thị</span>
+            </label>
+
+            <span id="selectedCount" class="selected-count">Đã chọn 0</span>
+          </div>
+
+          <div class="action-bar">
+            <button id="downloadBtn" class="button download" type="button" disabled>
+              Tải video đã chọn
+            </button>
+            <button id="exportCsvBtn" class="button secondary" type="button" disabled>
+              Xuất CSV
+            </button>
+            <button id="exportJsonBtn" class="button secondary" type="button" disabled>
+              Xuất JSON
+            </button>
+          </div>
+
+          <div id="emptyState" class="empty-state">
+            <div class="empty-icon" aria-hidden="true">↧</div>
+            <h3>Chưa có video đã quét</h3>
+            <p>
+              Mở bảng bên của extension, quét một trang TikTok rồi nhấn
+              “Xem kết quả”.
+            </p>
+          </div>
+
+          <div id="noMatchesState" class="empty-state compact-empty" hidden>
+            <h3>Không tìm thấy video phù hợp</h3>
+            <p>Thử đổi từ khóa tìm kiếm.</p>
+          </div>
+
+          <div id="resultsList" class="results-grid" aria-live="polite"></div>
+        </section>
+      </main>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </div>
+
+    <script src="../shared/protocol.js"></script>
+    <script src="../shared/utils.js"></script>
+    <script src="../sidepanel/license-access-controller.js"></script>
+    <script src="dashboard.js"></script>
+  </body>
+</html>

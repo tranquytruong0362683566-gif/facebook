@@ -1,6 +1,21 @@
-# Tạo tài khoản quản trị cho tranquytruong.top
+# Quản trị tranquytruong.top — KEY dùng chung trên nhiều trình duyệt (4.2.1)
 
-Trang đăng nhập có sẵn trong `admin/`. Để đăng nhập được, tạo dự án Supabase và cấp quyền ADMIN theo các bước dưới đây. Không cần VPS hoặc PHP trên GitHub Pages. Bộ này chưa được triển khai vào tài khoản của bạn và không có mật khẩu mặc định.
+Trang đăng nhập có sẵn trong `admin/`. Web 4.2.1 dùng được với extension 4.2.0. Bộ cập nhật này chưa được áp dụng vào Supabase hoặc GitHub của bạn.
+
+## Bạn đã thiết lập Supabase và ADMIN: cập nhật theo 4 bước này
+
+1. Mở đúng dự án Supabase đang dùng, chọn **SQL Editor → New query**.
+2. Mở `setup/03-share-approved-key.sql`, sao chép **toàn bộ** nội dung vào query và bấm **Run**. Dùng file này để nâng cấp; không cần tạo lại dự án hoặc tài khoản ADMIN.
+3. Mở lại [tranquytruong.top](https://tranquytruong.top/) ở từng trình duyệt có extension, bấm **Kiểm tra lại**. Cùng KEY đã duyệt và còn hạn sẽ được mở bảng điều khiển, kể cả định danh bản cài extension khác nhau.
+4. Để cập nhật giao diện web, giải nén ZIP web 4.2.1 và đưa nội dung lên gốc repository như bước 4 bên dưới. **Giữ nguyên file `config/license-config.js` đã cấu hình trên GitHub**, hoặc chép hai giá trị Supabase hiện tại vào file mới trước khi tải lên. Khi GitHub Pages triển khai xong, bấm **Ctrl + F5** trên web.
+
+**Chạy SQL ở bước 2 đã sửa được lỗi “KEY đã gắn với một bản cài extension khác” cho web/extension 4.2.0 đang dùng.** Không cần gỡ hay cài lại extension. Bản web mới chỉ gửi KEY, không gửi định danh bản cài; trang ADMIN bỏ mục Đăng ký lại extension.
+
+SQL nâng cấp giữ nguyên KEY, tên khách, ghi chú, trạng thái, hạn dùng, tài khoản ADMIN và lịch sử quản lý. KEY mới vẫn Chờ duyệt. Khóa/gia hạn một KEY áp dụng cho tất cả bản cài dùng KEY đó. File có thể chạy lại mà không đặt lại danh sách.
+
+Quyền đi theo **cùng KEY**, không theo ID extension. Nếu hai trình duyệt hiện hai KEY khác nhau thì mỗi KEY cần được duyệt riêng; bản này không tự gộp hai mã khác nhau. KEY được chia sẻ sang máy khác cũng sử dụng cùng quyền. Không coi KEY là số sê-ri phần cứng duy nhất.
+
+Các bước 1–5 bên dưới dành cho lần thiết lập mới. GitHub Pages phục vụ web tĩnh; Supabase lưu đăng nhập và quyền, không cần VPS hoặc PHP.
 
 ## 1. Tạo dự án và cơ sở dữ liệu
 
@@ -68,12 +83,12 @@ Không cần điền Supabase vào extension. Extension gắn với `https://tra
 1. Giải nén ZIP extension 4.2.0.
 2. Đang dùng bản cũ: chép nội dung mới vào đúng thư mục Chrome đang tải, giữ thư mục/ID; không gỡ tiện ích. Bấm **Tải lại** tại `chrome://extensions/`.
 3. Cài mới: bật **Chế độ dành cho nhà phát triển → Tải tiện ích đã giải nén**, chọn thư mục `extension` có `manifest.json`.
-4. Khách mở [tranquytruong.top](https://tranquytruong.top/) trong cùng hồ sơ Chrome với extension. KEY tự đăng ký và hiện **Chờ duyệt**.
+4. Khách mở [tranquytruong.top](https://tranquytruong.top/) trong trình duyệt/hồ sơ có extension. KEY mới tự đăng ký và hiện **Chờ duyệt**; KEY đã được duyệt và còn hạn dùng chung quyền trên các bản cài khác.
 5. Bạn vào `/admin/`, bấm **Tải lại** nếu cần, mở **Quản lý** tại KEY của khách.
 6. Ghi **Tên khách hàng**, đặt **Hạn sử dụng** nếu cần, bấm **Cấp quyền**. Để trống hạn nếu không giới hạn thời gian.
 7. Khách bấm **Kiểm tra lại** hoặc chờ trang tự kiểm tra để mở bảng điều khiển.
 
-Quyền trong danh sách `keys.json` cũ không được chuyển tự động. KEY cũ vẫn giữ nếu dữ liệu extension còn, nhưng cần ADMIN duyệt lại trong Supabase.
+Khi nâng cấp từ 4.2.0, quyền đang lưu trong Supabase được giữ nguyên và không cần duyệt lại. Nếu chuyển từ bản 4.1.0 dùng `keys.json`, danh sách cũ không được nhập tự động; cần ADMIN duyệt trong Supabase.
 
 ## Quản lý hàng ngày
 
@@ -85,10 +100,10 @@ Quyền trong danh sách `keys.json` cũ không được chuyển tự động. 
 | Gia hạn | Quản lý → chọn hạn trong tương lai → Cấp quyền hoặc Lưu thay đổi |
 | Không giới hạn hạn dùng | Xóa ô Hạn sử dụng → Cấp quyền hoặc Lưu thay đổi |
 | Xem KEY hết hạn | Chọn bộ lọc Hết hạn |
-| Khách cài lại và bị xung đột | Xác minh khách/KEY → Quản lý → Đăng ký lại extension → Cho phép đăng ký lại; khách mở lại web, ADMIN duyệt lại |
+| Khách dùng nhiều bản cài/trình duyệt | Cùng KEY đã duyệt → mở web → Kiểm tra lại; không cần đăng ký lại extension |
 | Đăng xuất | Bấm Đăng xuất ở đầu trang |
 
-Hạn hiển thị theo múi giờ máy quản trị, lưu UTC, được kiểm tra bằng giờ máy chủ. Đăng ký lại hủy quyền cũ; bản cài tiếp theo gắn định danh với KEY nhưng vẫn chờ duyệt. Nếu phần cứng hai máy sinh cùng KEY, cần xử lý mã định danh riêng, không đặt lại liên tục để duyệt cả hai.
+Hạn hiển thị theo múi giờ máy quản trị, lưu UTC, được kiểm tra bằng giờ máy chủ. Quyền và hạn dùng thuộc về KEY; cùng KEY luôn dùng chung trạng thái. Thu hồi quyền có hiệu lực ở lần kiểm tra tiếp theo: web kiểm tra tự động mỗi 30 giây khi tab hoạt động, trước lệnh mới và khi bấm Kiểm tra lại; kết quả cấp quyền giữ trong bộ nhớ tối đa 15 giây.
 
 Danh sách tự cập nhật mỗi 30 giây khi tab hoạt động. Nếu hai ADMIN sửa cùng KEY, lần lưu dữ liệu cũ bị từ chối: đóng hộp sửa, tải lại rồi mở lại KEY.
 
@@ -112,9 +127,10 @@ Không xóa danh sách KEY. Mỗi API quản trị kiểm tra quyền, nên ngư
 | Chưa cấu hình Supabase | Điền `config/license-config.js`, commit và tải lại web |
 | Sai email/mật khẩu | Dùng tài khoản Authentication của dự án, kiểm tra xác nhận email và mật khẩu tự đặt |
 | Chưa được cấp quyền ADMIN | Chạy `02-create-admin.sql` cho đúng email/dự án |
-| Không tìm thấy RPC | Chạy đủ `01-database.sql`, kiểm tra Project URL |
+| Không tìm thấy RPC | Dự án mới: chạy `01-database.sql`. Dự án 4.2.0 đang dùng: chạy `03-share-approved-key.sql`, kiểm tra đúng Project URL |
 | Chưa có KEY | Khách cần mở trang chính với extension 4.2.0; vào `/admin/` không tự tạo KEY |
-| KEY gắn với bản cài khác | Xác minh khách trước khi dùng Đăng ký lại extension |
+| KEY gắn với bản cài khác | Chạy toàn bộ `03-share-approved-key.sql` trong đúng dự án Supabase, rồi bấm Kiểm tra lại; không reset quyền KEY |
+| Hai trình duyệt hiện KEY khác nhau | Đây là hai mục cấp quyền khác nhau; ADMIN cần duyệt đúng từng KEY |
 | Chưa kết nối extension | Đúng `https://tranquytruong.top/`, cùng hồ sơ Chrome; tải lại extension/tab |
 | `/admin/` báo 404 | Kiểm tra `admin/index.html`, nhánh/thư mục xuất bản và trạng thái triển khai GitHub Pages |
 | Lỗi mạng/hết thời gian khi lưu | Tải lại danh sách xem đã lưu chưa, rồi mới thử lại |
@@ -123,14 +139,11 @@ Không xóa danh sách KEY. Mỗi API quản trị kiểm tra quyền, nên ngư
 
 Website không cần các gói Node để hoạt động. Để kiểm tra bằng Node.js 24 trở lên, giữ `web-github` cạnh `extension`:
 
-```bash
-node --experimental-vm-modules extension/tests/verify.mjs
-```
-
-Vào thư mục `web-github/setup` để kiểm tra SQL/giao diện:
+Vào thư mục `web-github/setup` để kiểm tra tích hợp web/extension, SQL và giao diện:
 
 ```bash
 npm install
+npm run test:bridge
 npm run test:database
 npx playwright install chromium
 npm run test:browser

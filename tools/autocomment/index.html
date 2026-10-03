@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="vi" class="license-pending">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Trần Quý Trường · Facebook Auto Comment</title>
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="../../assets/icons/extension-icon-32.png">
+  <link rel="stylesheet" href="../../styles/dashboard.css">
+  <link rel="stylesheet" href="../../styles/dashboard-taste.css">
+  <link rel="stylesheet" href="../../styles/web-connection.css">
+<link rel="stylesheet" href="../../suite/embedded.css"><script src="../../suite/client.js" data-tool="autocomment"></script></head>
+<body>
+  <div class="license-gate" id="licenseGate" role="dialog" aria-modal="true" aria-labelledby="licenseGateTitle">
+    <section class="license-card">
+      <section class="web-connect-box" aria-label="Kết nối extension">
+        <strong>Kết nối web với extension</strong>
+        <p>Cài extension rồi mở <a href="https://tranquytruong.top/">tranquytruong.top</a>. Extension tự kết nối với web.</p>
+        <input id="webDashboardAddress" type="url" readonly aria-label="Địa chỉ bảng điều khiển web">
+        <div class="web-connect-actions">
+          <button class="secondary-button" id="copyWebAddressBtn" type="button">Copy địa chỉ</button>
+          <button class="secondary-button" id="webReconnectBtn" type="button">Kết nối lại</button>
+          <button class="secondary-button" data-open-backup type="button">Nhập dữ liệu cũ</button>
+        </div>
+        <p id="webBridgeStatus" aria-live="polite">Đang tìm extension...</p>
+      </section>
+      <div class="license-mark" aria-hidden="true">KEY</div>
+      <p class="eyebrow">Xác thực bản quyền</p>
+      <h1 id="licenseGateTitle">Thiết bị chưa được cấp quyền</h1>
+      <p class="license-instruction">Copy KEY này và gửi cho ADMIN ZALO: <strong>0362683566</strong></p>
+      <label for="tqtMachineKeyInput">KEY thiết bị</label>
+      <div class="license-key-row">
+        <input id="tqtMachineKeyInput" type="text" value="Đang tạo KEY..." readonly spellcheck="false" aria-label="KEY thiết bị dùng chung quyền">
+        <button class="primary-button" id="copyTqtMachineKeyBtn" type="button">Copy KEY</button>
+      </div>
+      <p class="license-status" id="tqtLicenseStatus" data-state="checking" aria-live="polite">Web đang nhận KEY từ extension và kiểm tra quyền sử dụng...</p>
+      <button class="secondary-button license-retry-button" id="retryTqtLicenseBtn" type="button">Kiểm tra lại</button>
+    </section>
+  </div>
+
+  <div id="dashboardApp" inert aria-hidden="true">
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="app-brand" aria-label="Trần Quý Trường">
+        <span class="brand-logo" aria-hidden="true"><img class="brand-logo-image" src="../../assets/icons/extension-icon-48.png" alt=""></span>
+        <span class="brand-copy">
+          <span class="brand-title">Trần Quý Trường</span>
+          <span class="brand-subtitle">Facebook Auto Comment</span>
+        </span>
+      </div>
+      <nav class="header-nav" aria-label="Điều hướng chính">
+        <span class="nav-section-label">Điều khiển</span>
+        <button class="nav-button is-active" id="openHomeBtn" type="button" aria-controls="homePage" aria-current="page"><span>Trang chủ</span></button>
+        <button class="nav-button" id="openApiSettingsBtn" type="button" aria-controls="apiSettingsModal"><span>Cài đặt API</span></button>
+        <button class="nav-button" id="openWebSettingsBtn" type="button" aria-controls="webSettingsModal"><span>Cài đặt chạy</span></button>
+        <button class="nav-button" id="openAiPromptsBtn" type="button" aria-controls="aiPromptsModal" aria-expanded="false"><span>Prompt AI</span></button>
+        <span class="nav-section-label nav-section-workspace">Không gian làm việc</span>
+        <button class="nav-button workspace-trigger" type="button" data-workspace-target="queue" aria-controls="workspaceModal" aria-expanded="false"><span>Hàng đợi</span></button>
+        <button class="nav-button workspace-trigger" type="button" data-workspace-target="composer" aria-controls="workspaceModal" aria-expanded="false"><span>Soạn bình luận</span></button>
+        <button class="nav-button workspace-trigger" type="button" data-workspace-target="templates" aria-controls="workspaceModal" aria-expanded="false"><span>Kho mẫu</span></button>
+        <button class="nav-button workspace-trigger" type="button" data-workspace-target="records" aria-controls="workspaceModal" aria-expanded="false"><span>Kết quả</span></button>
+      </nav>
+      <div class="sidebar-meta" aria-label="Phiên bản công cụ">
+        <span>Phiên bản</span>
+        <strong>4.2.1</strong>
+        <span id="webExtensionStatus" aria-live="polite">Extension · Chưa kết nối</span>
+        <button class="secondary-button" data-open-backup type="button">Dữ liệu</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main dashboard-home is-page-active" id="homePage" data-dashboard-page="home">
+    <section class="status-card" aria-labelledby="statusHeading">
+      <div class="status-overview">
+        <div class="status-heading">
+          <div class="status-title-group">
+            <span class="status-icon" aria-hidden="true">AUTO</span>
+            <div>
+              <p class="eyebrow">Trạng thái hoạt động</p>
+              <h1 id="statusHeading">Tiến trình tự động</h1>
+            </div>
+          </div>
+          <span class="terminal-state-badge is-ready" id="systemProcessBadge">SẴN SÀNG</span>
+        </div>
+
+        <div class="current-process" aria-live="polite">
+          <strong id="systemProcessTitle">Hệ thống sẵn sàng nhận lệnh</strong>
+          <p id="systemProcessDetail">Chưa có tác vụ đang chạy.</p>
+        </div>
+
+        <div class="process-meta" aria-label="Thông tin tiến trình">
+          <span>Vòng <strong id="systemCycleValue">--</strong></span>
+          <span>Hàng đợi <strong id="systemQueueValue">0/0</strong></span>
+          <span>Còn lại <strong id="systemRemainingValue">0</strong></span>
+          <span>Nguồn <strong id="systemSourceValue">--</strong></span>
+        </div>
+
+        <div class="process-target">
+          <span id="systemCurrentTargetLabel">LINK HIỆN TẠI</span>
+          <strong id="systemCurrentLink">Chưa có link đang xử lý</strong>
+        </div>
+
+        <div class="process-countdown hidden" id="systemCountdownRow">
+          <span id="systemCountdownLabel">Đang chờ</span>
+          <time id="systemCountdownValue" datetime="PT0S">00:00</time>
+        </div>
+
+        <div class="progress-row" aria-label="Tiến độ hoạt động">
+          <div class="progress-track"><i id="systemProgressBar"></i></div>
+          <strong id="systemProgressText">0%</strong>
+        </div>
+
+        <div class="status-counts" aria-label="Thống kê tiến trình hiện tại">
+          <span>Thành công <strong id="systemSuccessCount">0</strong></span>
+          <span>Đã loại <strong id="systemSkippedCount">0</strong></span>
+          <span>Lỗi <strong id="systemErrorCount">0</strong></span>
+          <span>Đã chạy <time id="systemElapsedTime" datetime="PT0S">00:00</time></span>
+        </div>
+      </div>
+
+      <div class="status-console">
+        <div class="status-console-heading">
+          <div><span class="live-indicator" aria-hidden="true"></span><strong>Nhật ký tiến trình</strong></div>
+          <span>LIVE</span>
+        </div>
+        <div class="terminal-log" id="systemTerminalLog" aria-live="polite">
+          <div class="terminal-line is-ok"><span>&gt;</span><em>Giao diện đã sẵn sàng.</em><b>[OK]</b></div>
+          <div class="terminal-line is-running"><span>&gt;</span><em>Đang kết nối tiến trình nền...</em><b>[RUNNING]</b></div>
+        </div>
+
+        <div class="auto-run-actions">
+          <button class="primary-button auto-run-button" id="dashboardApiRunBtn" type="button">
+            <span>Chạy bằng API</span>
+          </button>
+          <button class="secondary-button auto-run-button" id="dashboardManualRunBtn" type="button">
+            <span>Chạy thủ công</span>
+          </button>
+          <button class="danger-button auto-stop-button hidden" id="stopClosedLoopBtn" type="button">Dừng tự động</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="dashboard-page workspace-page" id="workspaceModal" role="region" aria-labelledby="workspaceModalTitle" aria-hidden="true">
+    <div class="page-card wide-page">
+      <div class="page-heading">
+        <div>
+          <h2 id="workspaceModalTitle">Hàng đợi</h2>
+          <p id="workspaceModalDescription">Kiểm tra danh sách link đang chờ hệ thống xử lý</p>
+        </div>
+        <span class="hidden" id="workspaceModalIcon" aria-hidden="true">◎</span>
+        <button class="secondary-button small-button page-back-button" id="closeWorkspaceModalBtn" type="button">Trang chủ</button>
+      </div>
+
+      <div class="page-content" id="workspaceModalContent">
+        <section class="workspace-panel panel" id="queue" data-workspace-panel="queue" aria-label="Hàng đợi">
+          <div class="panel-toolbar"><span class="counter-badge" id="fbPostLinkCounter">0 link</span></div>
+          <div class="form-group">
+            <label for="fbPostLinkInput">Danh sách link bài viết Facebook</label>
+            <textarea id="fbPostLinkInput" spellcheck="false" placeholder="Link mới sau khi quét sẽ tự đổ vào đây."></textarea>
+            <p class="hint">Link được chuẩn hóa, loại trùng và bỏ các link đã xử lý.</p>
+          </div>
+        </section>
+
+        <section class="workspace-panel panel" id="composer" data-workspace-panel="composer" aria-label="Soạn bình luận">
+          <div class="composer-tabs" role="tablist" aria-label="Chọn cách soạn bình luận">
+            <button class="composer-tab is-active" id="composerAiTab" type="button" role="tab" aria-selected="true" aria-controls="composerAiPanel" data-composer-tab="ai">
+              <span>Chọn bằng AI</span>
+            </button>
+            <button class="composer-tab" id="composerManualTab" type="button" role="tab" aria-selected="false" aria-controls="composerManualPanel" data-composer-tab="manual" tabindex="-1">
+              <span>Nhập thủ công</span>
+            </button>
+          </div>
+
+          <div class="composer-tab-panel is-active" id="composerAiPanel" role="tabpanel" aria-labelledby="composerAiTab" data-composer-panel="ai">
+            <div class="two-column">
+              <div class="form-group">
+                <div class="label-row">
+                  <label for="articleInput">Nội dung bài viết gốc</label>
+                  <button class="secondary-button small-button" id="pasteBtn" type="button">Dán nội dung</button>
+                </div>
+                <textarea id="articleInput" maxlength="6000" placeholder="Dán nội dung bài viết cần trả lời..."></textarea>
+                <div class="field-status"><span class="hint">Nội dung dùng để AI phân loại và tạo bình luận.</span><span class="counter" id="articleCounter">0/6000</span></div>
+              </div>
+
+              <div class="form-stack">
+                <div class="form-group">
+                  <label for="productNameInput">Tên sản phẩm</label>
+                  <input type="text" id="productNameInput" maxlength="160" placeholder="Nhập tên sản phẩm">
+                  <div class="field-status"><span class="hint">Giúp AI bám đúng sản phẩm.</span><span class="counter" id="productCounter">0/160</span></div>
+                </div>
+                <div class="input-grid">
+                  <div class="form-group">
+                    <label for="shopeeTargetCountInput">Số link Shopee cần tạo</label>
+                    <input type="number" id="shopeeTargetCountInput" min="1" max="100" step="1" value="10" inputmode="numeric">
+                    <p class="hint">Mặc định 10; khi mẫu chỉ còn 1 link, hệ thống tự mở Shopee nền để tạo thêm.</p>
+                  </div>
+                  <div class="form-group">
+                    <label for="toneSelect">Phong cách bình luận</label>
+                    <select id="toneSelect">
+                      <option value="đời thường, gần gũi, tự nhiên như người thật bình luận">Đời thường và tự nhiên</option>
+                      <option value="hài hước nhẹ, bắt trend vừa phải, không lố và không spam">Hài hước và bắt trend</option>
+                      <option value="chuyên gia tư vấn, có logic, ngắn gọn và đáng tin">Chuyên gia tư vấn</option>
+                      <option value="tích cực, đồng cảm, khen vừa đủ, không sáo rỗng">Tích cực và đồng cảm</option>
+                      <option value="bán hàng mềm, gợi ý khéo, không ép mua và không phóng đại">Bán hàng mềm</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="productLinkInput">Link Shopee hoặc link sản phẩm</label>
+                  <textarea id="productLinkInput" placeholder="Mỗi link một dòng"></textarea>
+                  <div class="field-status"><span class="link-preview" id="linkStatus">Chưa có link sản phẩm</span><span class="counter" id="linkCounter">0 link</span></div>
+                </div>
+                <button class="primary-button" id="generateBtn" type="button">Tạo bình luận bằng AI</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="composer-tab-panel" id="composerManualPanel" role="tabpanel" aria-labelledby="composerManualTab" data-composer-panel="manual" hidden>
+            <div class="manual-auto-comment-layout">
+              <div class="form-group">
+                <label for="manualCommentInput">Nội dung dùng cho quá trình gửi tự động</label>
+                <textarea id="manualCommentInput" maxlength="8000" placeholder="Nhập một nội dung cố định, hoặc (nội dung1):(nội dung2):(nội dung3) để chọn ngẫu nhiên cho mỗi bài."></textarea>
+                <div class="field-status">
+                  <span class="hint">Hệ thống giữ nguyên nội dung đã nhập và tự gửi cho các link trong hàng đợi.</span>
+                  <span class="counter" id="manualCommentCounter">0/8000</span>
+                </div>
+              </div>
+
+              <div class="manual-random-format" aria-label="Cú pháp nội dung ngẫu nhiên">
+                <strong>Muốn chọn ngẫu nhiên?</strong>
+                <span>Nhập các nội dung theo đúng dạng:</span>
+                <code>(nội dung1):(nội dung2):(nội dung3)</code>
+                <small>Mỗi link sẽ chọn ngẫu nhiên một nội dung. Dấu hai chấm nằm bên trong ngoặc vẫn được giữ nguyên.</small>
+              </div>
+
+              <div class="manual-auto-comment-note">
+                <strong>Quy trình vẫn chạy hoàn toàn tự động</strong>
+                <span>Extension vẫn quét link, áp dụng bộ lọc đang bật, chờ theo cài đặt và tự gửi bình luận. Chế độ này chỉ thay bước AI viết nội dung bằng văn bản bạn nhập.</span>
+              </div>
+
+              <p class="manual-comment-status" id="manualCommentStatus" data-state="warning" aria-live="polite">Hãy nhập nội dung trước khi bắt đầu Chạy Tự Động.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="workspace-panel panel output-panel" id="composerOutput" data-workspace-panel="composer" aria-live="polite" aria-label="Kết quả bình luận AI">
+          <div class="panel-toolbar"><span>Kết quả bình luận</span></div>
+          <div id="output" class="placeholder">Bình luận sẽ xuất hiện tại đây...</div>
+        </section>
+
+        <section class="workspace-panel panel" id="templates" data-workspace-panel="templates" aria-label="Kho mẫu">
+          <div class="panel-toolbar"><button class="primary-button small-button" id="btnAddTpl" type="button">Thêm mẫu</button></div>
+          <div class="tpl-list" id="tplList" aria-live="polite"></div>
+        </section>
+
+        <section class="workspace-panel records-grid" id="records" data-workspace-panel="records" aria-label="Kết quả xử lý">
+          <section class="panel record-success">
+            <div class="panel-toolbar">
+              <strong>Link đã bình luận thành công</strong>
+              <div><span><span id="commentedCountStat">0</span> link</span><button class="secondary-button small-button" id="clearCommentedLinksBtn" type="button">Xóa</button></div>
+            </div>
+            <textarea id="commentedLinksBox" readonly spellcheck="false"></textarea>
+          </section>
+          <section class="panel record-removed">
+            <div class="panel-toolbar">
+              <strong>Link đã loại bỏ</strong>
+              <div><span><span id="removedCountStat">0</span> link</span><button class="secondary-button small-button" id="clearRemovedLinksBtn" type="button">Xóa</button></div>
+            </div>
+            <textarea id="removedLinksBox" readonly spellcheck="false"></textarea>
+          </section>
+          <section class="panel record-error">
+            <div class="panel-toolbar">
+              <strong>Link lỗi</strong>
+              <div><span><span id="errorCountStat">0</span> link</span><button class="secondary-button small-button" id="clearErrorLinksBtn" type="button">Xóa</button></div>
+            </div>
+            <textarea id="errorLinksBox" readonly spellcheck="false"></textarea>
+          </section>
+          <section class="panel record-success record-link-panel" aria-labelledby="commentedReviewTitle">
+            <div class="panel-toolbar">
+              <strong id="commentedReviewTitle">Xem bài đã bình luận</strong>
+              <span class="record-link-count"><span id="commentedReviewCount">0</span> link</span>
+            </div>
+            <div class="record-link-list" id="commentedReviewList" role="list" aria-label="Danh sách bài đã bình luận có thể mở" tabindex="0">
+              <p class="record-link-empty">Chưa có bài đã bình luận.</p>
+            </div>
+          </section>
+          <section class="panel record-removed record-link-panel" aria-labelledby="removedReviewTitle">
+            <div class="panel-toolbar">
+              <strong id="removedReviewTitle">Xem bài đã loại bỏ</strong>
+              <span class="record-link-count"><span id="removedReviewCount">0</span> link</span>
+            </div>
+            <div class="record-link-list" id="removedReviewList" role="list" aria-label="Danh sách bài đã loại bỏ có thể mở" tabindex="0">
+              <p class="record-link-empty">Chưa có bài đã loại bỏ.</p>
+            </div>
+          </section>
+          <section class="panel record-error record-link-panel" aria-labelledby="errorReviewTitle">
+            <div class="panel-toolbar">
+              <strong id="errorReviewTitle">Xem bài bị lỗi</strong>
+              <span class="record-link-count"><span id="errorReviewCount">0</span> link</span>
+            </div>
+            <div class="record-link-list" id="errorReviewList" role="list" aria-label="Danh sách bài bị lỗi có thể mở" tabindex="0">
+              <p class="record-link-empty">Chưa có bài bị lỗi.</p>
+            </div>
+          </section>
+          <div class="record-summary">
+            <span>Hôm nay bình luận <strong id="footerCommentedCount">0</strong></span>
+            <span>Hôm nay loại <strong id="footerRemovedCount">0</strong></span>
+            <span>Link lỗi hôm nay <strong id="footerErrorCount">0</strong></span>
+          </div>
+          <div class="hidden" aria-hidden="true">
+            <strong id="validLinkStat">0</strong><strong id="leftTplStat">0</strong><strong id="rightTplStat">0</strong><strong id="historyStat">0</strong>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard-page" id="apiSettingsModal" role="region" aria-labelledby="apiSettingsTitle" aria-hidden="true">
+    <div class="page-card settings-page">
+      <div class="page-heading">
+        <div><h2 id="apiSettingsTitle">Cài đặt API</h2></div>
+        <button class="secondary-button small-button page-back-button" id="closeApiSettingsBtn" type="button">Lưu và về Trang chủ</button>
+      </div>
+      <div class="page-content form-stack">
+        <div class="auth-bar">
+          <span id="authAvatar" aria-hidden="true">API</span>
+          <div><div class="auth-status" id="authStatus">Chưa nhập API key</div></div>
+        </div>
+        <div class="form-group">
+          <label for="chatApiProviderInput">Nguồn AI</label>
+          <select id="chatApiProviderInput">
+            <option value="flatkey">FlatKey</option>
+            <option value="openai">ChatGPT chính hãng (OpenAI)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="chatApiModelInput">Model</label>
+          <select id="chatApiModelInput">
+            <option value="gpt-5.4-mini">gpt-5.4-mini</option>
+            <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+            <option value="gpt-5-mini">gpt-5-mini</option>
+          </select>
+        </div>
+        <div class="form-group" id="flatkeyApiSettingsGroup">
+          <label for="flatkeyApiKeyInput">Danh sách FlatKey API key</label>
+          <div class="secret-input-row">
+            <textarea class="masked-api-keys" id="flatkeyApiKeyInput" rows="4" placeholder="Mỗi dòng một FlatKey API key" autocomplete="new-password" spellcheck="false"></textarea>
+            <button class="secondary-button small-button secret-toggle" id="flatkeyApiKeyToggle" type="button" aria-label="Hiện FlatKey API key" title="Hiện FlatKey API key">Hiện</button>
+          </div>
+        </div>
+        <div class="form-group hidden" id="openAiApiSettingsGroup">
+          <label for="chatApiKeyInput">Danh sách OpenAI API key chính thức</label>
+          <div class="secret-input-row">
+            <textarea class="masked-api-keys" id="chatApiKeyInput" rows="4" placeholder="Mỗi dòng một API key từ platform.openai.com" autocomplete="new-password" spellcheck="false"></textarea>
+            <button class="secondary-button small-button secret-toggle" id="chatApiKeyToggle" type="button" aria-label="Hiện OpenAI API key" title="Hiện OpenAI API key">Hiện</button>
+          </div>
+        </div>
+        <p class="hint hidden" id="chatApiFailoverStatus" aria-live="polite"></p>
+        <div class="form-group">
+          <label for="apifyActorIdInput">Apify Actor lấy bài viết</label>
+          <select id="apifyActorIdInput">
+            <option value="powerful_bachelor~facebook-group-scraper">powerful_bachelor/Facebook-Group-Scraper</option>
+            <option value="caprolok~facebook-groups-scraper" selected>caprolok/facebook-groups-scraper</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="apifyApiTokenInput">Danh sách Apify API key</label>
+          <div class="secret-input-row">
+            <textarea class="masked-api-keys" id="apifyApiTokenInput" rows="4" placeholder="Mỗi dòng một Apify API key" autocomplete="off" spellcheck="false"></textarea>
+            <button class="secondary-button small-button secret-toggle" id="apifyApiTokenToggle" type="button" aria-label="Hiện Apify API key" title="Hiện Apify API key">Hiện</button>
+          </div>
+          <p class="hint hidden" id="apifyApiFailoverStatus" aria-live="polite"></p>
+        </div>
+        <div class="notice" id="tokenBanner" role="alert"><strong>API đang lỗi hoặc bị giới hạn.</strong><span>Kiểm tra lại API key hoặc quota.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard-page" id="webSettingsModal" role="region" aria-labelledby="webSettingsTitle" aria-hidden="true">
+    <div class="page-card wide-page">
+      <div class="page-heading">
+        <div><h2 id="webSettingsTitle">Cài đặt chạy</h2><p>Nguồn bài và thời gian của vòng tự động</p></div>
+        <button class="secondary-button small-button page-back-button" id="closeWebSettingsBtn" type="button">Lưu và về Trang chủ</button>
+      </div>
+      <div class="page-content settings-grid">
+        <section class="panel settings-wide">
+          <h3>Nguồn bài</h3>
+          <div class="two-column">
+            <div class="form-group">
+              <label for="fbGroupIdInput">UID số hoặc link nhóm Facebook có UID số</label>
+              <textarea id="fbGroupIdInput" spellcheck="false" placeholder="Mỗi dòng một nhóm; dùng UID dạng số để hỗ trợ cả API và thủ công"></textarea>
+              <p class="hint">Nên dùng UID nhóm dạng số hoặc link nhóm có UID dạng số để luôn chuyển dự phòng được.</p>
+            </div>
+            <div class="form-stack">
+              <div class="form-group">
+                <label for="scanSourceModeSelect">Nguồn quét link</label>
+                <select id="scanSourceModeSelect">
+                  <option value="group_latest">Bài viết mới</option>
+                  <option value="group_top">Bài viết Top</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="groupLimitInput">Số link lấy mỗi nhóm</label>
+                <input id="groupLimitInput" type="number" min="1" max="50" step="1" value="5">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3>Thời gian vòng chạy</h3>
+          <div class="input-grid">
+            <div class="form-group"><label for="loopPauseSecondsInput">Nghỉ sau mỗi vòng (giây)</label><input id="loopPauseSecondsInput" type="number" min="0" max="86400" step="1" value="240"></div>
+            <div class="form-group"><label for="linkPauseSecondsInput">Nghỉ sau mỗi link (giây)</label><input id="linkPauseSecondsInput" type="number" min="0" max="86400" step="1" value="60"></div>
+            <div class="form-group daily-comment-limit-setting">
+              <label for="dailyCommentLimitInput">Giới hạn bình luận thành công/ngày</label>
+              <input id="dailyCommentLimitInput" type="number" min="0" max="100000" step="1" value="0" inputmode="numeric">
+              <p class="hint" id="dailyCommentLimitStatus" aria-live="polite">Nhập 0 để không giới hạn.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3>Giữ bài theo số bình luận</h3>
+          <div class="comment-count-filter-setting">
+            <label class="setting-switch" for="commentCountBypassInput">
+              <span class="setting-switch-copy">
+                <strong>Lọc bài theo số bình luận</strong>
+                <small id="commentCountBypassHelp">Bật = 1: giữ bài có ít nhất 1 bình luận. Tắt = 0: không lọc theo số bình luận. Khi lọc bài bán hàng đang tắt, bộ lọc này sẽ hoạt động độc lập.</small>
+              </span>
+              <span class="setting-switch-action">
+                <span class="setting-switch-state" id="commentCountBypassState" data-state="off">Đang tắt</span>
+                <span class="setting-switch-control">
+                  <input id="commentCountBypassInput" type="checkbox" role="switch" aria-describedby="commentCountBypassHelp" value="0">
+                  <span class="setting-switch-track" aria-hidden="true"></span>
+                </span>
+              </span>
+            </label>
+          </div>
+          <div class="selling-filter-setting">
+            <label class="setting-switch" for="filterSellingPostsCheckbox">
+              <span class="setting-switch-copy">
+                <strong>Lọc bài bán hàng</strong>
+                <small id="filterSellingPostsHelp">Khi tắt, AI không phân loại bài bán hàng/cho thuê. Nếu lọc theo số bình luận đang bật, chỉ xử lý bài có ít nhất 1 bình luận.</small>
+              </span>
+              <span class="setting-switch-action">
+                <span class="setting-switch-state" id="filterSellingPostsState" data-state="on">Đang bật</span>
+                <span class="setting-switch-control">
+                  <input id="filterSellingPostsCheckbox" type="checkbox" role="switch" aria-describedby="filterSellingPostsHelp" checked>
+                  <span class="setting-switch-track" aria-hidden="true"></span>
+                </span>
+              </span>
+            </label>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard-page" id="aiPromptsModal" role="region" aria-labelledby="aiPromptsTitle" aria-hidden="true">
+    <div class="page-card wide-page prompt-editor-page">
+      <div class="page-heading">
+        <div>
+          <h2 id="aiPromptsTitle">Prompt AI</h2>
+          <p>Chỉnh prompt của 3 lượt AI xử lý caption bài viết</p>
+        </div>
+        <button class="secondary-button small-button page-back-button" id="closeAiPromptsBtn" type="button">Trang chủ</button>
+      </div>
+      <div class="page-content prompt-editor-content">
+        <p class="prompt-editor-notice" id="aiPromptEditorStatus" aria-live="polite">Các biến dạng {{tenBien}} sẽ được thay bằng dữ liệu thật khi chạy. Thay đổi chỉ có hiệu lực sau khi bấm “Lưu thay đổi”.</p>
+
+        <section class="panel prompt-editor-card">
+          <div class="prompt-editor-heading">
+            <div><strong>Lần 1/3: Lọc bài viết</strong><span>Phân loại caption để quyết định bình luận hoặc bỏ qua.</span></div>
+            <button class="secondary-button small-button" type="button" data-reset-ai-prompt="articleIntent">Khôi phục ban đầu</button>
+          </div>
+          <textarea id="articleIntentPromptInput" class="prompt-textarea" spellcheck="false" aria-label="Prompt lần 1 lọc bài viết"></textarea>
+          <p class="hint">Biến dùng được: <code>{{article}}</code></p>
+        </section>
+
+        <section class="panel prompt-editor-card">
+          <div class="prompt-editor-heading">
+            <div><strong>Lần 2/3: Chọn mẫu sản phẩm</strong><span>Đối chiếu caption với toàn bộ Kho mẫu và chọn sản phẩm phù hợp.</span></div>
+            <button class="secondary-button small-button" type="button" data-reset-ai-prompt="templateSelection">Khôi phục ban đầu</button>
+          </div>
+          <textarea id="templateSelectionPromptInput" class="prompt-textarea prompt-textarea-tall" spellcheck="false" aria-label="Prompt lần 2 chọn mẫu sản phẩm"></textarea>
+          <p class="hint">Biến dùng được: <code>{{article}}</code>, <code>{{templateList}}</code></p>
+        </section>
+
+        <section class="panel prompt-editor-card">
+          <div class="prompt-editor-heading">
+            <div><strong>Lần 3/3: Tạo bình luận</strong><span>Tạo bình luận cuối cùng bằng sản phẩm và link đã chọn.</span></div>
+            <button class="secondary-button small-button" type="button" data-reset-ai-prompt="commentGeneration">Khôi phục ban đầu</button>
+          </div>
+          <textarea id="commentGenerationPromptInput" class="prompt-textarea" spellcheck="false" aria-label="Prompt lần 3 tạo bình luận"></textarea>
+          <p class="hint">Biến dùng được: <code>{{article}}</code>, <code>{{productName}}</code>, <code>{{linkInstruction}}</code>, <code>{{matchedProductInstruction}}</code>, <code>{{selectedTone}}</code></p>
+        </section>
+
+        <div class="prompt-editor-actions">
+          <button class="secondary-button" id="resetAllAiPromptsBtn" type="button">Khôi phục cả 3</button>
+          <button class="primary-button" id="saveAiPromptsBtn" type="button">Lưu thay đổi</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard-page template-editor-page" id="templateModal" role="region" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="page-card settings-page">
+      <div class="page-heading">
+        <div><h2 id="modalTitle">Thêm mẫu mới</h2><p>Thông tin sản phẩm và danh sách link</p></div>
+        <button class="secondary-button small-button page-back-button" id="closeTemplateModalBtn" type="button">Kho mẫu</button>
+      </div>
+      <div class="page-content form-stack">
+        <div class="form-group"><label for="tplNameInput">Tên mẫu</label><input type="text" id="tplNameInput" maxlength="90"></div>
+        <div class="form-group"><label for="tplProductInput">Tên sản phẩm</label><input type="text" id="tplProductInput" maxlength="160"></div>
+        <div class="form-group"><label for="tplLinksInput">Danh sách link</label><textarea id="tplLinksInput" placeholder="Mỗi link một dòng"></textarea></div>
+        <div class="page-actions">
+          <button class="primary-button" id="saveTemplateModalBtn" type="button">Lưu mẫu</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="automation-status-source hidden" id="bridgeStatus" aria-live="polite">Sẵn sàng. Quét link, đọc caption và gửi bình luận bằng cơ chế hiện tại.</div>
+  <div class="toast-host" id="toastHost" aria-live="polite"></div>
+  </div>
+
+  <dialog class="web-data-dialog" id="webDataDialog" aria-labelledby="webDataTitle">
+    <h2 id="webDataTitle">Sao lưu và chuyển dữ liệu</h2>
+    <p>Xuất hoặc nhập kho mẫu, cài đặt và hàng đợi trên trình duyệt đang dùng.</p>
+    <label class="backup-secret-label"><input id="includeBackupSecrets" type="checkbox"> Bao gồm API key và cookie đã lưu</label>
+    <p>File chứa API key hoặc cookie là dữ liệu riêng của bạn. Chỉ nhập trên web do bạn quản lý.</p>
+    <button class="primary-button" id="webExportDataBtn" type="button">Xuất dữ liệu JSON</button>
+    <input id="webBackupFileInput" type="file" accept=".json,application/json" aria-label="Chọn file dữ liệu JSON">
+    <button class="primary-button" id="webImportDataBtn" type="button">Nhập dữ liệu</button>
+    <button class="secondary-button" id="closeWebDataDialogBtn" type="button">Đóng</button>
+    <p id="webBackupStatus" role="status"></p>
+  </dialog>
+  <script src="../../shared/dashboard-backup.js"></script>
+  <script src="../../config/license-config.js"></script>
+  <script src="../../shared/supabase-api.js"></script>
+  <script src="../../scripts/background-bridge-client.js"></script>
+  <script src="../../scripts/license-verifier.js"></script>
+  <script src="../../scripts/license-access-controller.js"></script>
+  <script src="../../scripts/provider-api-client.js"></script>
+  <script src="../../shared/manual-comment-content.js"></script>
+  <script src="../../scripts/ai-comment-composer.js"></script>
+  <script src="../../scripts/dashboard-state.js"></script>
+  <script src="../../scripts/apify-scanner-client.js"></script>
+  <script src="../../scripts/automation-workflow-controller.js"></script>
+  <script src="../../scripts/dashboard-ui-controller.js"></script>
+  <script src="../../scripts/web-connection-controller.js"></script>
+</body>
+</html>

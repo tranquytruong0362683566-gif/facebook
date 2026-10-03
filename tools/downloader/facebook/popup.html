@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Facebook Reels Scanner</title>
+    <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="../../../suite/embedded.css"><script src="../../../suite/client.js" data-tool="downloader"></script></head>
+  <body>
+    <div id="facebookApp">
+      <header class="app-header">
+        <div class="brand-mark" aria-hidden="true">FB</div>
+        <div class="brand-copy">
+          <h1>Facebook Reels Scanner</h1>
+          <p>Bảng quét nhanh</p>
+        </div>
+        <button id="statusPill" class="status-badge idle" type="button" disabled>Sẵn sàng</button>
+      </header>
+
+      <main>
+        <section class="panel scanner-panel" aria-labelledby="scanHeading">
+          <div class="section-heading">
+            <p class="eyebrow">Quét dữ liệu</p>
+            <h2 id="scanHeading">Trang Facebook hiện tại</h2>
+            <p>Mở đúng mục Reels của Page hoặc trang cá nhân cần lấy video.</p>
+          </div>
+
+          <div class="source-card">
+            <span id="surfaceDot" class="source-dot"></span>
+            <div>
+              <strong id="surfaceTitle">Đang kiểm tra trang…</strong>
+              <span id="surfaceUrl">Hãy mở mục Reels trên Facebook</span>
+            </div>
+          </div>
+
+          <label class="field" for="maxItems">
+            <span>Giới hạn Reel cần quét</span>
+            <input id="maxItems" type="number" min="1" max="1000" step="1" value="500">
+          </label>
+
+          <div class="button-row">
+            <button id="startButton" class="button primary" type="button">Bắt đầu quét</button>
+            <button id="stopButton" class="button danger" type="button" disabled>Dừng</button>
+          </div>
+
+          <div class="progress-card" aria-live="polite">
+            <div class="progress-topline">
+              <strong id="statusMessage">Sẵn sàng quét Facebook Reels</strong>
+              <span id="progressCount">0 / 500</span>
+            </div>
+            <div class="progress-track" role="progressbar" aria-label="Tiến trình quét" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div id="progressFill" class="progress-fill"></div>
+            </div>
+            <div class="progress-meta">
+              <span id="updatedAt">Chưa có dữ liệu</span>
+              <span id="scrollCount">0 lần cuộn</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel batch-panel" aria-labelledby="batchHeading">
+          <div class="section-heading">
+            <p class="eyebrow">Nhập link thủ công</p>
+            <h2 id="batchHeading">Tải hàng loạt Facebook</h2>
+            <p>Dán mỗi dòng một link Reel, link chia sẻ hoặc link fb.watch.</p>
+          </div>
+
+          <label class="field batch-field" for="batchLinksInput">
+            <span>Danh sách link Facebook</span>
+            <textarea
+              id="batchLinksInput"
+              rows="6"
+              spellcheck="false"
+              placeholder="https://www.facebook.com/reel/123...&#10;https://www.facebook.com/share/r/.../&#10;https://fb.watch/..."
+            ></textarea>
+          </label>
+
+          <div class="batch-meta" aria-live="polite">
+            <span id="batchLinkCount">0 link hợp lệ</span>
+            <span>Tối đa 1.000 link</span>
+          </div>
+
+          <button id="batchDownloadButton" class="button batch-button" type="button" disabled>
+            Tải hàng loạt chất lượng cao
+          </button>
+          <p class="batch-hint">FSave chạy ngầm, tự chọn MP4 cao nhất có audio và xử lý tối đa 5 link cùng lúc.</p>
+        </section>
+
+        <section class="panel result-panel" aria-labelledby="resultHeading">
+          <div class="result-icon" aria-hidden="true">✓</div>
+          <p class="eyebrow">Kết quả hiện tại</p>
+          <div class="result-total">
+            <strong id="foundCount">0</strong>
+            <span id="resultHeading">Reel đã quét được</span>
+          </div>
+          <p id="resultMessage" class="result-message">Chưa có dữ liệu. Hãy bắt đầu một lần quét.</p>
+          <div class="mini-stats">
+            <span><strong id="readyCount">0</strong>Có liên kết</span>
+            <span><strong id="downloadedCount">0</strong>Đã tải</span>
+          </div>
+          <button id="resultsButton" class="button results-button" type="button" disabled>Xem kết quả</button>
+          <p class="result-hint">Side Panel sẽ đóng trước, sau đó dashboard mới được mở.</p>
+        </section>
+      </main>
+
+      <div id="notice" class="toast" role="status" aria-live="polite"></div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

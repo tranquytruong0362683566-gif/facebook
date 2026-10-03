@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bảng kết quả Facebook Reels</title>
+    <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="../../../suite/embedded.css"><script src="../../../suite/client.js" data-tool="downloader"></script></head>
+  <body>
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">FB</div>
+          <div>
+            <p class="eyebrow">Bảng điều khiển</p>
+            <h1>Kho Facebook Reels đã quét</h1>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="refreshButton" class="button secondary compact" type="button">Làm mới</button>
+          <button id="openSourceButton" class="button secondary compact" type="button">Mở Facebook</button>
+          <button id="closeDashboardButton" class="button ghost compact" type="button">Đóng trang</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <section class="overview-card" aria-labelledby="overviewHeading">
+        <div class="overview-copy">
+          <div class="overview-title-row">
+            <div>
+              <p class="eyebrow">Dữ liệu đồng bộ từ bảng quét</p>
+              <h2 id="pageName">Kết quả hiện tại</h2>
+            </div>
+            <span id="scanStatusBadge" class="status-badge idle">Sẵn sàng</span>
+          </div>
+          <p id="scanMessage" class="scan-summary">Chưa có tiến trình quét.</p>
+          <p class="source-line">Nguồn: <a id="sourceUrl" href="#">Chưa chọn nguồn</a></p>
+        </div>
+
+        <div class="metric-grid">
+          <article class="metric-card"><span>Tổng Reel</span><strong id="totalStat">0</strong></article>
+          <article class="metric-card"><span>Có liên kết</span><strong id="readyStat">0</strong></article>
+          <article class="metric-card accent"><span>Đã chọn</span><strong id="selectedStat">0</strong></article>
+          <article class="metric-card success"><span>Đã tải</span><strong id="doneStat">0</strong></article>
+        </div>
+      </section>
+
+      <section id="queueCard" class="download-panel" aria-labelledby="queueTitle" hidden>
+        <div class="download-info">
+          <div class="download-title-row">
+            <div>
+              <p class="eyebrow">Hàng đợi tải xuống</p>
+              <h2 id="queueTitle">Tiến trình tải video</h2>
+            </div>
+            <span id="queueSubtitle">0 video</span>
+          </div>
+          <div class="progress-track download-track" role="progressbar" aria-label="Tiến trình tải xuống" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div id="queueProgress" class="progress-fill download"></div>
+          </div>
+          <p id="queueCurrent" class="download-current">Đang chờ…</p>
+        </div>
+        <div class="download-controls">
+          <button id="retryButton" class="button secondary" type="button" hidden>Thử lại lỗi</button>
+          <button id="cancelButton" class="button danger" type="button" hidden>Hủy hàng chờ</button>
+        </div>
+      </section>
+
+      <section class="results-card" aria-labelledby="resultsHeading">
+        <div class="results-heading">
+          <div>
+            <p class="eyebrow">Danh sách đầy đủ</p>
+            <h2 id="resultsHeading">Reel đã quét</h2>
+            <p id="visibleCount">Chưa có dữ liệu</p>
+          </div>
+          <button id="clearButton" class="button danger subtle" type="button">Xóa toàn bộ kết quả</button>
+        </div>
+
+        <div class="toolbar" aria-label="Công cụ quản lý kết quả">
+          <label class="search-field" for="searchInput">
+            <span class="sr-only">Tìm trong kết quả</span>
+            <input id="searchInput" type="search" placeholder="Tìm mô tả, tên kênh hoặc ID Reel…">
+          </label>
+
+          <label class="filter-field" for="filterSelect">
+            <span>Trạng thái</span>
+            <select id="filterSelect">
+              <option value="all">Tất cả</option>
+              <option value="ready">Có liên kết tải</option>
+              <option value="unavailable">Thiếu liên kết</option>
+              <option value="completed">Đã tải xong</option>
+              <option value="failed">Tải bị lỗi</option>
+            </select>
+          </label>
+
+          <label class="select-all" for="masterCheckbox">
+            <input id="masterCheckbox" type="checkbox">
+            <span>Chọn tất cả đang hiển thị</span>
+          </label>
+
+          <span id="selectedCount" class="selected-count">Đã chọn 0</span>
+        </div>
+
+        <div class="action-bar">
+          <button id="downloadSelectedButton" class="button download" type="button" disabled>Tải Reel đã chọn</button>
+          <div class="folder-field">
+            <label for="folderInput">Thư mục Downloads</label>
+            <input id="folderInput" type="text" value="Facebook Reels" maxlength="60">
+            <button id="saveFolderButton" class="button secondary compact" type="button">Lưu</button>
+          </div>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon" aria-hidden="true">↧</div>
+          <h3>Chưa có Reel đã quét</h3>
+          <p>Mở Side Panel của extension, quét đúng mục Facebook Reels rồi nhấn “Xem kết quả”.</p>
+        </div>
+
+        <div id="noMatchesState" class="empty-state compact-empty" hidden>
+          <h3>Không tìm thấy Reel phù hợp</h3>
+          <p>Hãy thử đổi từ khóa hoặc bộ lọc.</p>
+        </div>
+
+        <div id="resultsList" class="results-grid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="shared.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
