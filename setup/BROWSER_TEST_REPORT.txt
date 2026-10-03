@@ -1,0 +1,10 @@
+PASS: Login page renders on desktop and mobile without horizontal overflow
+PASS: Incorrect password and authenticated non-ADMIN accounts cannot enter management
+PASS: ADMIN login checks the server role; session restores and table content does not execute HTML
+PASS: Approving a KEY saves customer, notes and local expiry through the protected database RPC
+PASS: Blocking and status/search filters reflect actual server permissions
+PASS: Conflicting edits are rejected instead of silently overwriting another ADMIN session
+PASS: Logout clears the visible data and session; no browser runtime errors occurred
+
+7 browser checks passed.
+Real headless Chromium with actual application files and PostgreSQL RPC functions. Supabase Auth HTTP responses and JWT identity mapping are simulated. No live Supabase/GitHub deployment or Facebook actions were performed.

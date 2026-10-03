@@ -1,0 +1,21 @@
+PASS: Legacy local approvals cannot unlock an unapproved KEY; existing machine KEY is preserved
+PASS: ADMIN approval in PostgreSQL opens the extension on a forced check
+PASS: A second installation with the same KEY shares the web approval without an installation token
+PASS: Force refresh bypasses a positive cache immediately after ADMIN blocks the KEY
+PASS: Ordinary action checks reuse a short cache and enforce revocation at the next 30-second check
+PASS: Expiry crossing cannot extend authorization to the end of the positive cache
+PASS: Server-side expired KEYs are denied independently of the client cache
+PASS: Network failure removes the positive cache; recovering the service permits a fresh check
+PASS: Mismatched KEY, contradictory permission, invalid expiry, invalid JSON and HTTP errors all deny access
+PASS: Request timeout aborts the pending HTTP request and denies access
+PASS: Concurrent dashboard/action checks issue one registration request
+PASS: The hardware formula keeps matching new browsers on the same KEY; concurrent creation stores one KEY
+PASS: Unavailable hardware APIs cannot mint a universal empty-fingerprint KEY
+PASS: The actual service worker rejects dashboard commands from an untrusted origin before checking KEYs
+PASS: The actual service worker permits account reads only while the server approval is valid
+PASS: The actual service worker blocks comment commands and still permits tab cleanup after revocation
+PASS: The extension manifest contains the configured API host and no legacy GitHub license host
+
+17 extension / PostgreSQL integration checks passed.
+Test date: 2026-10-03.
+Real extension modules and service worker execute against embedded PostgreSQL RPCs. Chrome APIs, HTTP transport and hardware values are simulated. No live website, Supabase account or Facebook posting was performed.

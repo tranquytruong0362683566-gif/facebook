@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src https://*.supabase.co; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <title>Quản trị KEY · Trần Quý Trường</title>
+  <link rel="icon" href="../assets/icons/extension-icon-32.png">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../"><span class="brand-mark">TQT</span><span>Trần Quý Trường<small>QUẢN TRỊ QUYỀN TRUY CẬP</small></span></a>
+    <a class="back-link" href="../">Về bảng điều khiển ↗</a>
+  </header>
+  <main>
+    <section class="login-layout" id="loginPanel" aria-labelledby="loginTitle">
+      <div class="intro">
+        <p class="eyebrow">TRANG DÀNH CHO ADMIN</p>
+        <h1>Quản lý KEY.<br>Kiểm soát quyền truy cập.</h1>
+        <p>Xem các thiết bị đã đăng ký, cấp quyền sử dụng và quản lý hạn dùng tại một nơi.</p>
+        <div class="intro-note"><span class="dot"></span>Thiết bị mới luôn chờ ADMIN phê duyệt.</div>
+      </div>
+      <form class="login-card" id="loginForm">
+        <span class="card-icon" aria-hidden="true">↗</span>
+        <h2 id="loginTitle">Đăng nhập quản trị</h2>
+        <p>Sử dụng tài khoản ADMIN của bạn.</p>
+        <label for="adminEmail">Email</label>
+        <input id="adminEmail" name="email" type="email" required autocomplete="username" maxlength="254" placeholder="email của bạn">
+        <label for="adminPassword">Mật khẩu</label>
+        <input id="adminPassword" name="password" type="password" required autocomplete="current-password" maxlength="256" placeholder="Nhập mật khẩu">
+        <button id="signInBtn" class="primary" type="submit">Đăng nhập <span aria-hidden="true">→</span></button>
+        <p id="loginStatus" class="message" role="status" aria-live="polite"></p>
+        <small class="login-note">Chỉ tài khoản được chủ website cấp quyền quản trị mới truy cập được danh sách KEY.</small>
+      </form>
+    </section>
+    <section id="adminPanel" hidden aria-labelledby="adminTitle">
+      <div class="page-heading"><div><p class="eyebrow">QUẢN LÝ THIẾT BỊ</p><h1 id="adminTitle">Danh sách KEY</h1><p id="adminIdentity"></p></div><button id="signOutBtn" class="secondary" type="button">Đăng xuất</button></div>
+      <div class="summary"><span class="dot"></span><strong id="recordCount">0</strong><span>KEY theo bộ lọc hiện tại</span><span class="refresh-note">Cập nhật tự động mỗi 30 giây</span></div>
+      <form id="filterForm" class="filters">
+        <label class="search-field"><span class="sr-only">Tìm KEY hoặc tên khách</span><input id="searchInput" type="search" maxlength="120" placeholder="Tìm KEY hoặc tên khách..."></label>
+        <label><span class="sr-only">Trạng thái</span><select id="statusFilter"><option value="all">Tất cả trạng thái</option><option value="pending">Chờ duyệt</option><option value="approved">Được cấp quyền</option><option value="blocked">Đã khóa</option><option value="expired">Hết hạn</option></select></label>
+        <button class="primary" type="submit">Tìm kiếm</button>
+        <button id="refreshBtn" class="secondary" type="button">Tải lại</button>
+      </form>
+      <p id="adminStatus" class="message" role="status" aria-live="polite"></p>
+      <div class="table-shell"><table><thead><tr><th>KEY thiết bị</th><th>Khách hàng</th><th>Trạng thái</th><th>Hạn sử dụng</th><th>Truy cập gần nhất</th><th><span class="sr-only">Thao tác</span></th></tr></thead><tbody id="licenseRows"></tbody></table><p id="emptyState" class="empty-state" hidden>Chưa có KEY phù hợp. Thiết bị mới sẽ xuất hiện khi extension kiểm tra KEY.</p></div>
+      <div class="pagination"><span id="pageInfo">Trang 1</span><div><button id="previousPageBtn" class="secondary" type="button">← Trang trước</button><button id="nextPageBtn" class="secondary" type="button">Trang sau →</button></div></div>
+    </section>
+  </main>
+  <dialog id="editDialog" aria-labelledby="editTitle">
+    <form id="editForm">
+      <div class="dialog-heading"><div><p class="eyebrow">QUYỀN TRUY CẬP</p><h2 id="editTitle">Quản lý KEY</h2></div><button id="closeEditBtn" class="icon-button" type="button" aria-label="Đóng">×</button></div>
+      <p id="editKey" class="key-value"></p>
+      <label for="customerNameInput">Tên khách hàng</label><input id="customerNameInput" type="text" maxlength="120" placeholder="Tên để dễ nhận diện">
+      <label for="licenseStatusInput">Trạng thái</label><select id="licenseStatusInput"><option value="pending">Chờ duyệt</option><option value="approved">Được cấp quyền</option><option value="blocked">Đã khóa</option></select>
+      <label for="expiresAtInput">Hạn sử dụng</label><input id="expiresAtInput" type="datetime-local"><small>Để trống nếu không giới hạn thời gian. Giờ theo máy đang dùng.</small>
+      <label for="noteInput">Ghi chú</label><textarea id="noteInput" rows="3" maxlength="1000" placeholder="Ghi chú riêng cho ADMIN"></textarea>
+      <p id="editStatus" class="message" role="status" aria-live="polite"></p>
+      <div class="dialog-actions"><button id="approveBtn" class="primary" type="button">Cấp quyền</button><button id="blockBtn" class="danger" type="button">Khóa KEY</button><button id="saveLicenseBtn" class="secondary" type="submit">Lưu thay đổi</button></div>
+      <p class="message">Mọi bản cài extension dùng cùng KEY sẽ chung quyền và hạn sử dụng này.</p>
+    </form>
+  </dialog>
+  <footer>Trần Quý Trường · Quản trị KEY 4.2.2</footer>
+  <script src="../config/license-config.js"></script>
+  <script src="../shared/supabase-api.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

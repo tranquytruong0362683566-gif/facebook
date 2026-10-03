@@ -1,0 +1,7 @@
+PASS: The actual dashboard hides controls and displays the retained device KEY while waiting for approval
+PASS: Periodic approval checks unlock the full dashboard without reload
+PASS: Revocation closes the dashboard and stops the active automation state
+PASS: The dashboard locks at the expiry boundary and a later network failure never restores old authorization
+
+4 dashboard UI checks passed.
+Real headless Chromium loads all dashboard application files. Chrome message responses and license states are simulated; no Facebook action or live deployment was performed.
